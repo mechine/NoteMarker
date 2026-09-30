@@ -1,4 +1,8 @@
 import { defineManifest } from '@crxjs/vite-plugin'
+import pkg from '../../package.json'
+
+/** 版本号单一来源：extension/package.json（发版只改那里） */
+const VERSION = pkg.version
 
 /**
  * 权限集（specs/extension-popup 修订版 → 点击激活模型）：无 <all_urls>、无常驻 content script。
@@ -20,7 +24,7 @@ export default defineManifest({
   default_locale: 'en',
   name: '__MSG_extName__',
   description: '__MSG_extShortDesc__',
-  version: '0.4.0',
+  version: VERSION,
   permissions: ['activeTab', 'scripting', 'storage', 'contextMenus', 'sidePanel'],
   host_permissions: [`${BACKEND_ORIGIN_DEFAULT}/*`, ...e2eExtraHosts],
   // 图标单击打开右侧标注栏（design D1）；剪藏入口迁至面板按钮
