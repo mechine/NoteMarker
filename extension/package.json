@@ -1,0 +1,21 @@
+{
+  "name": "notemarker-extension",
+  "version": "0.2.0",
+  "private": true,
+  "description": "notemarker Chrome 扩展前端（Manifest V3，网页划线标注与本地知识库剪藏）",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && esbuild src/scripts/content/content.ts src/scripts/content/highlighter.ts --bundle --format=iife --minify --outdir=dist",
+    "check:i18n": "node scripts/check-i18n.mjs"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.7.1",
+    "@types/chrome": "^0.0.268",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "marked": "^18.0.14"
+  }
+}

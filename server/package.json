@@ -1,0 +1,24 @@
+{
+  "name": "notemarker-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "notemarker 本地后端服务：代理文件写入（及未来的 sqlite 访问）",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "rebuild": "tsx src/rebuild.ts"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^24.0.0",
+    "@types/turndown": "^5.0.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.3"
+  }
+}

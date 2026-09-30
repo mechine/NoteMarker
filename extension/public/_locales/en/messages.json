@@ -1,0 +1,408 @@
+{
+  "extName": { "message": "NoteMarker" },
+  "extShortDesc": {
+    "message": "Highlight and annotate any webpage, saved to your local notemarker knowledge base"
+  },
+  "extActionTitle": { "message": "Save to notemarker" },
+
+  "options_title": { "message": "NoteMarker Dashboard" },
+  "options_nav_readlist": { "message": "Reading list" },
+  "options_nav_annotations": { "message": "Annotations" },
+  "options_nav_sync": { "message": "Sync" },
+  "options_nav_settings": { "message": "Settings" },
+  "options_filter_all": { "message": "All" },
+  "options_filter_unread": { "message": "Unread" },
+  "options_filter_read": { "message": "Read" },
+  "options_filter_archived": { "message": "Archived" },
+  "options_refresh": { "message": "Refresh" },
+  "options_sync_annotations": { "message": "Sync annotations" },
+  "options_readlist_offline": {
+    "message": "Local service is not running, so the reading list can't be loaded. Start the notemarker backend and retry."
+  },
+  "options_retry": { "message": "Retry" },
+  "options_pager_prev": { "message": "Previous" },
+  "options_pager_next": { "message": "Next" },
+  "options_filter_all_sites": { "message": "All sites" },
+  "options_filter_all_types": { "message": "All types" },
+  "options_type_highlight": { "message": "Highlight" },
+  "options_type_underline": { "message": "Underline" },
+  "options_type_image": { "message": "Image" },
+  "options_filter_all_notes": { "message": "All" },
+  "options_filter_with_note": { "message": "With note" },
+  "options_filter_without_note": { "message": "Without note" },
+  "options_search_ph": { "message": "Search quotes/notes…" },
+  "options_export_json": { "message": "Export JSON" },
+  "options_export_md": { "message": "Export MD" },
+  "options_annotations_offline": {
+    "message": "Local service is not running, so annotations can't be loaded. Start the notemarker backend and retry."
+  },
+  "options_pager_more": { "message": "Load more" },
+  "options_detail_open_page": { "message": "Open source page" },
+  "options_detail_close": { "message": "Close" },
+  "options_sync_now": { "message": "Sync now" },
+  "options_qs_title": { "message": "Get started with notemarker" },
+  "options_qs_intro_a": {
+    "message": "Highlight and annotate webpages and save them to a local knowledge base. This requires the notemarker backend running on your machine (data stays in"
+  },
+  "options_qs_intro_b": {
+    "message": "on your device; nothing is uploaded). Follow these steps to start it:"
+  },
+  "options_qs_step1a": { "message": "Install " },
+  "options_qs_step1b": { "message": " (18 or later)" },
+  "options_qs_step2": { "message": "Get the notemarker project and open its directory" },
+  "options_qs_step3a": { "message": "Run " },
+  "options_qs_step3b": { "message": ", then " },
+  "options_qs_step4a": { "message": "Run " },
+  "options_qs_step4b": {
+    "message": " to start the local service (default http://127.0.0.1:8765)"
+  },
+  "options_qs_step5": {
+    "message": "Come back to this page and click \"Retry\" under Service Status; once it shows \"Online\" you can highlight on any webpage."
+  },
+  "options_backend_help_a": { "message": "Address of the local backend. Default " },
+  "options_backend_help_b": {
+    "message": " — usually no change is needed (only if you changed the port with the "
+  },
+  "options_backend_help_c": {
+    "message": " environment variable). See \"Get started\" above for setup instructions."
+  },
+  "options_backend_save": { "message": "Save Backend URL" },
+  "options_save_config": { "message": "Save Config" },
+  "options_cache_limit_label": {
+    "message": "Local annotation cache limit (entries; 0 = never clean. When the limit is exceeded, the least recently visited pages are cleaned on sync; cleared pages are restored from the backend on revisit)"
+  },
+  "options_cache_save": { "message": "Save Cache Limit" },
+  "options_loading": { "message": "Loading…" },
+  "options_readlist_empty": { "message": "(No items match the filter)" },
+  "options_ann_count": {
+    "message": "$P1$ annotations",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_mark_unread": { "message": "Mark unread" },
+  "options_mark_read": { "message": "Mark read" },
+  "options_archive": { "message": "Archive" },
+  "options_unarchive": { "message": "Unarchive" },
+  "options_preview": { "message": "Preview" },
+  "options_copy_path": { "message": "Copy path" },
+  "options_copied": { "message": "Copied" },
+  "options_copy_failed": { "message": "Copy failed" },
+  "options_delete": { "message": "Delete" },
+  "options_pager_info": {
+    "message": "Page $P1$ of $P2$ · $P3$ items",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" },
+      "p3": { "content": "$3" }
+    }
+  },
+  "options_offline_short": { "message": "Local service is not running" },
+  "options_preview_no_content": { "message": "No saved page content to preview" },
+  "options_status_update_failed": { "message": "Failed to update status" },
+  "options_delete_confirm": {
+    "message": "Delete \"$P1$\"?\nThis deletes the backend database records and exported content files. This cannot be undone.",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_delete_failed": { "message": "Delete failed" },
+  "options_sync_empty": { "message": "(No local annotations yet)" },
+  "options_sync_pending_count": {
+    "message": "$P1$ pending",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_all_synced": { "message": "All synced" },
+  "options_syncing": { "message": "Syncing…" },
+  "options_sync_failed_offline": {
+    "message": "Sync failed: local service is not running. Items are kept for retry."
+  },
+  "options_sync_pushed": {
+    "message": "pushed $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_failed_n": {
+    "message": "failed $P1$ (retryable)",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_deleted": {
+    "message": "deleted $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_delete_failed_n": {
+    "message": "$P1$ deletions failed",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_done_prefix": { "message": "Sync complete: " },
+  "options_sep": { "message": ", " },
+  "options_chip_pending": { "message": "Pending" },
+  "options_chip_synced": { "message": "Synced" },
+  "options_empty_quote": { "message": "(empty quote)" },
+  "options_hist_loaded": {
+    "message": "$P1$ of $P2$ loaded",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_hist_empty": { "message": "(No annotations match the current filters)" },
+  "options_anchor_ctx": {
+    "message": "…$P1$ [quote] $P2$…",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_note_prefix": {
+    "message": "Note: $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_source_prefix": {
+    "message": "From: $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_md_title": { "message": "# NoteMarker Annotations Export" },
+  "options_md_count": {
+    "message": "$P1$ annotations · exported $P2$",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_export_offline": { "message": "Backend not connected; cannot export" },
+  "options_export_failed_offline": { "message": "Export failed: local service is not running" },
+  "options_export_empty": { "message": "No annotations match the current filters; nothing exported" },
+  "options_export_done": {
+    "message": "Exported $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_checking": { "message": "Checking…" },
+  "options_ping_online": {
+    "message": "Online · v$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_ping_offline": {
+    "message": "Local service not connected. Follow the steps under \"Get started with notemarker\" above to start the backend, then click \"Retry\"."
+  },
+  "options_saved": { "message": "Saved" },
+  "options_cache_invalid": { "message": "Enter a number ≥ 0 (0 = never clean)" },
+
+  "sidepanel_title": { "message": "NoteMarker Panel" },
+  "sidepanel_nav_marks": { "message": "Marks" },
+  "sidepanel_nav_preview": { "message": "Save" },
+  "sidepanel_nav_config": { "message": "Settings" },
+  "sidepanel_toggle_site": { "message": "Enable on this site" },
+  "sidepanel_toggle_marks": { "message": "Show marks" },
+  "sidepanel_marks_title": { "message": "Annotations on this page" },
+  "sidepanel_sync": { "message": "Sync" },
+  "sidepanel_shot": { "message": "📷 Screenshot mark" },
+  "sidepanel_unsupported": {
+    "message": "Highlighting is not supported on this page (browser-internal or non-http/https), so annotations can't be shown."
+  },
+  "sidepanel_not_activated": {
+    "message": "Highlighting is not active on this page yet. Click the notemarker toolbar icon to activate (once per page load)."
+  },
+  "sidepanel_marks_empty": {
+    "message": "No highlights or notes on this page yet. Select some text to start."
+  },
+  "sidepanel_pending_count": {
+    "message": "$P1$ pending",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_img_quote": {
+    "message": "Image · $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_img_saved": { "message": " · image saved" },
+  "sidepanel_locate_hint": { "message": "Click to locate in the page" },
+  "sidepanel_shot_title": { "message": "Screenshot annotation (no in-page anchor)" },
+  "sidepanel_no_image": { "message": "No image stored" },
+  "sidepanel_no_note": { "message": "(no note)" },
+  "sidepanel_chip_pending": { "message": "Pending" },
+  "sidepanel_chip_synced": { "message": "Synced" },
+  "sidepanel_type_screenshot": { "message": "Screenshot" },
+  "sidepanel_edit": { "message": "Edit" },
+  "sidepanel_delete": { "message": "Delete" },
+  "sidepanel_note_ph": { "message": "Write a note… (Ctrl+Enter to save)" },
+  "sidepanel_save": { "message": "Save" },
+  "sidepanel_cancel": { "message": "Cancel" },
+  "sidepanel_saved_pending": { "message": "Saved (pending sync)" },
+  "sidepanel_locate_failed": {
+    "message": "Can't locate this annotation (page content may have changed)"
+  },
+  "sidepanel_locate_unsupported": { "message": "This page doesn't support locating annotations" },
+  "sidepanel_shot_unsupported": { "message": "Screenshots aren't supported on this page" },
+  "sidepanel_shot_start_hint": {
+    "message": "Drag to select a screenshot area on the page; press Esc to cancel"
+  },
+  "sidepanel_shot_no_receiver": {
+    "message": "Highlighter not active on this page: click the toolbar icon to open the panel and activate, then retry"
+  },
+  "sidepanel_shot_sw_stale": {
+    "message": "Background service outdated: reload the extension at chrome://extensions and retry"
+  },
+  "sidepanel_shot_disabled": {
+    "message": "Highlighting disabled: check \"Enable on this site\" and \"Enable extension\""
+  },
+  "sidepanel_paused_master": {
+    "message": "Extension paused: marks are hidden and new ones can't be created. Turn \"Enable extension\" back on in Settings."
+  },
+  "sidepanel_paused_site": {
+    "message": "Highlighting is disabled on this site. Turn \"Enable on this site\" back on in the Marks tab."
+  },
+  "sidepanel_checking": { "message": "Checking…" },
+  "sidepanel_ping_online": {
+    "message": "Online · v$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_offline_short": { "message": "Local service is not running" },
+  "sidepanel_backend_saved": { "message": "Backend URL saved" },
+  "sidepanel_colors_saved": {
+    "message": "Highlight colors saved; takes effect on all open pages immediately"
+  },
+  "sidepanel_recent_offline": {
+    "message": "Local service is not running; can't load recent saves"
+  },
+  "sidepanel_recent_empty": { "message": "No saved pages yet" },
+  "sidepanel_loading": { "message": "Loading…" },
+  "sidepanel_reader_no_content": {
+    "message": "No saved page content to preview (annotations only?)"
+  },
+  "sidepanel_clip_title": { "message": "Save" },
+  "sidepanel_clip_btn": { "message": "Save this page" },
+  "sidepanel_pv_save_imgs": { "message": "save images locally" },
+  "sidepanel_pv_full": { "message": "Use full page" },
+  "sidepanel_region_title": { "message": "Clip region" },
+  "sidepanel_region_clear": { "message": "Clear" },
+  "sidepanel_region_pick": { "message": "Pick clip region" },
+  "sidepanel_region_cancel": { "message": "Cancel picking" },
+  "sidepanel_region_cancelled": { "message": "Picking cancelled" },
+  "sidepanel_region_picking_hint": {
+    "message": "Select a passage of main text on the page; the extension will infer the clip region…"
+  },
+  "sidepanel_region_start_failed": { "message": "Failed to start region picking" },
+  "sidepanel_region_cleared": { "message": "Site rule cleared; back to auto-detection" },
+  "sidepanel_region_set_len": {
+    "message": "Clip region set · $P1$ · ~$P2$ chars",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_region_none": { "message": "No region detected" },
+  "sidepanel_rule_saved": { "message": "Clip region saved (for this site)" },
+  "sidepanel_region_set": {
+    "message": "Clip region set · $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_region_hint": { "message": "Auto-detects main content when unset" },
+  "sidepanel_recent_clips": { "message": "Recent saves" },
+  "sidepanel_reader_back": { "message": "← Back" },
+  "sidepanel_reader_open": { "message": "Open original" },
+  "sidepanel_cfg_extension": { "message": "Extension" },
+  "sidepanel_cfg_master": { "message": "Enable extension" },
+  "sidepanel_cfg_display": { "message": "Page display" },
+  "sidepanel_display_show": { "message": "Show highlights" },
+  "sidepanel_display_sidebar": { "message": "Sidebar only" },
+  "sidepanel_cfg_colors": { "message": "Highlight colors:" },
+  "sidepanel_cfg_backend": { "message": "Backend service" },
+  "sidepanel_retry": { "message": "Retry" },
+  "sidepanel_backend_help_a": {
+    "message": "Requires the notemarker backend running on your machine (data stays in"
+  },
+  "sidepanel_backend_help_b": {
+    "message": " on your device; nothing is uploaded). Start it from the project directory:"
+  },
+  "sidepanel_backend_help_sep": { "message": " → " },
+  "sidepanel_backend_help_c": { "message": ". Default address " },
+  "sidepanel_backend_help_d": {
+    "message": " — change the address above only if you changed the port with"
+  },
+  "sidepanel_backend_help_e": { "message": "." },
+  "sidepanel_mode_rule": { "message": "Site rule" },
+  "sidepanel_mode_selection": { "message": "Selection" },
+  "sidepanel_mode_smart": { "message": "Smart extraction" },
+  "sidepanel_mode_selector": { "message": "Fallback container" },
+  "sidepanel_mode_full": { "message": "Full page" },
+  "sidepanel_pv_no_title": { "message": "(untitled)" },
+  "sidepanel_pv_mode_len": {
+    "message": "$P1$ · $P2$ chars",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_pv_no_text": { "message": "(no text)" },
+  "sidepanel_pv_imgs_count": {
+    "message": "$P1$ images",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_clipping": { "message": "Collecting…" },
+  "sidepanel_clip_failed": { "message": "Failed to start clipping" },
+  "sidepanel_saving_imgs": { "message": "Localizing images and saving…" },
+  "sidepanel_img_stats": {
+    "message": " · $P1$/$P2$ images localized",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_saved_dup": {
+    "message": "Already saved: $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_saved_path": {
+    "message": "Saved: $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_export_offline": { "message": "Local service is not running; nothing exported" },
+  "sidepanel_export_failed": {
+    "message": "Export failed: $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_unknown_error": { "message": "unknown error" },
+  "sidepanel_export_send_failed": { "message": "Failed to start export" },
+  "sidepanel_refull": { "message": "Re-collecting the full page…" },
+  "sidepanel_refull_failed": { "message": "Re-collect failed" },
+  "sidepanel_syncing": { "message": "Syncing…" },
+  "sidepanel_sync_failed_offline": {
+    "message": "Sync failed: local service is not running. Items are kept for retry."
+  },
+  "sidepanel_sync_pushed": {
+    "message": "pushed $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_failed_n": {
+    "message": "failed $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_deleted": {
+    "message": "deleted $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_done_prefix": { "message": "Sync complete: " },
+  "sidepanel_sep": { "message": ", " },
+
+  "menu_sync": { "message": "Sync annotations to local service" },
+  "menu_open_manage": { "message": "Open dashboard (reading list / sync)" },
+  "menu_master": { "message": "Enable extension" },
+  "menu_site": { "message": "Enable highlighting on this site" },
+  "menu_marks": { "message": "Show marks" },
+
+  "hl_annotate": { "message": "Annotate" },
+  "hl_note_badge": { "message": "Note" },
+  "hl_dot_title": { "message": "Highlight" },
+  "hl_write_note": { "message": "Add note" },
+  "hl_reason_switch_shot": { "message": "Switched to screenshot mode" },
+  "hl_shot_hint": {
+    "message": "Drag to select the screenshot area; press Esc to cancel"
+  },
+  "hl_screenshot_quote": {
+    "message": "Screenshot $P1$×$P2$",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "hl_region_failed": {
+    "message": "Couldn't identify a clip region (selection too short or covers the whole page). Select a passage of main text and retry."
+  },
+
+  "common_truncated": { "message": "(Content too long; display truncated)" }
+}

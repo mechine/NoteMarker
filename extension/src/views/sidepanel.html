@@ -1,0 +1,582 @@
+<!doctype html>
+<!-- 标注侧栏（specs/extension-side-panel 三标签页结构）：标记（默认）/ 保存 / 设置 -->
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title data-i18n="sidepanel_title"></title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 10px 10px 24px;
+        font: 400 13px sans-serif;
+        color: #3d3d3d;
+        background: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #d9d9d9;
+          background: #1e1e1e;
+        }
+        .ops button,
+        nav button {
+          color: #d9d9d9;
+        }
+      }
+      /* 标签导航 */
+      nav {
+        display: flex;
+        gap: 2px;
+        border-bottom: 1px solid #d9d9d9;
+        margin-bottom: 10px;
+      }
+      nav button {
+        flex: 1;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        padding: 8px 0;
+        font: 400 13px sans-serif;
+        border-bottom: 2px solid transparent;
+        color: #3d3d3d;
+      }
+      nav button.active {
+        border-bottom-color: #ffd234;
+        font-weight: 600;
+      }
+      .toggles {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 2px 2px 8px;
+        font-size: 12px;
+      }
+      .toggles label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .toggles input[type='checkbox'] {
+        accent-color: #f5c518;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .bar .title {
+        font-weight: 600;
+        flex: 1;
+        white-space: nowrap;
+      }
+      .bar .count {
+        color: #c2410c;
+        font-size: 12px;
+      }
+      button {
+        padding: 4px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #f2f2f2;
+        color: #3d3d3d;
+        cursor: pointer;
+        font: 400 12px sans-serif;
+      }
+      button:hover {
+        background: #e3e3e3;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      button.primary {
+        background: #ffd234;
+        border-color: #e8b819;
+        font-weight: 600;
+      }
+      button.primary:hover {
+        background: #ffea9f;
+      }
+      button.danger {
+        color: #c7372f;
+      }
+      .msg {
+        font-size: 12px;
+        min-height: 16px;
+        margin-bottom: 6px;
+      }
+      .msg.ok {
+        color: #32d74b;
+      }
+      .msg.err {
+        color: #c7372f;
+      }
+      #unsupported {
+        border: 1px solid #e5b5b2;
+        border-radius: 4px;
+        padding: 14px;
+        color: #c7372f;
+      }
+      ul.items {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .item {
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+      }
+      .item .quote {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        cursor: pointer;
+        border-left: 3px solid #f5c518;
+        padding-left: 8px;
+      }
+      .item .note {
+        color: #898989;
+        font-size: 12px;
+        margin-top: 4px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .item .shot-thumb {
+        margin-top: 6px;
+        color: #898989;
+        font-size: 12px;
+      }
+      .item .shot-thumb img {
+        max-width: 100%;
+        max-height: 140px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        display: block;
+      }
+      .item .meta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        color: #898989;
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
+      .dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .chip {
+        padding: 1px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        border: 1px solid #bbb;
+        color: #898989;
+      }
+      .chip.pending {
+        border-color: #c2410c;
+        color: #c2410c;
+      }
+      .chip.synced {
+        border-color: #32d74b;
+        color: #32d74b;
+      }
+      .ops {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .editbox {
+        margin-top: 8px;
+      }
+      .editbox textarea {
+        width: 100%;
+        min-height: 52px;
+        resize: vertical;
+        padding: 6px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        font: 400 13px/1.4 sans-serif;
+        background: transparent;
+        color: inherit;
+        box-sizing: border-box;
+      }
+      .editbox .colors {
+        display: flex;
+        gap: 6px;
+        margin: 6px 0;
+        align-items: center;
+      }
+      .editbox .colors .swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+      }
+      .editbox .colors .swatch.active {
+        border-color: #3d3d3d;
+      }
+      .editbox .colors button.toggled {
+        background: #ffe9a0;
+        border-color: #e8b819;
+      }
+      /* 预览标签 */
+      #clip-preview {
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+      }
+      #clip-preview .pv-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      #clip-preview .pv-title {
+        font-weight: 600;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #clip-preview .pv-mode {
+        padding: 1px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        border: 1px solid #2f81f7;
+        color: #2f81f7;
+        white-space: nowrap;
+      }
+      #clip-preview .pv-snippet {
+        max-height: 140px;
+        overflow: auto;
+        border-left: 3px solid #f5c518;
+        padding-left: 8px;
+        color: #898989;
+        font-size: 12px;
+      }
+      #clip-preview .pv-ops {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      #clip-preview .pv-imgs {
+        margin-top: 8px;
+        font-size: 12px;
+      }
+      #clip-preview .pv-imgs label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        user-select: none;
+      }
+      #clip-preview .pv-imgs input {
+        accent-color: #f5c518;
+      }
+      #clip-rule-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+        align-items: center;
+      }
+      #region-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 4px;
+      }
+      #region-row .chip {
+        font-family: Consolas, monospace;
+      }
+      details.adv summary {
+        cursor: pointer;
+        color: #898989;
+        font-size: 11px;
+        margin: 8px 0 6px;
+        user-select: none;
+      }
+      details.adv #clip-rule-row {
+        margin-bottom: 6px;
+      }
+      #clip-rule-row input,
+      #backend-url-input {
+        flex: 1;
+        min-width: 0;
+        padding: 5px 8px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        font: 400 12px monospace;
+      }
+      .hint {
+        color: #898989;
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+      #recent-clips {
+        list-style: none;
+        margin: 0 0 12px;
+        padding: 0;
+      }
+      #recent-clips li {
+        padding: 6px 4px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+      }
+      #recent-clips li:hover {
+        background: rgba(127, 127, 127, 0.08);
+      }
+      #recent-clips .rc-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+      #recent-clips .rc-meta {
+        color: #898989;
+        font-size: 11px;
+        margin-top: 2px;
+      }
+      /* 阅读预览：预览标签内的普通流式视图（不遮挡其他标签） */
+      #reader {
+        border-top: 1px solid #d9d9d9;
+        padding-top: 8px;
+      }
+      #reader .rd-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      #reader .rd-title {
+        flex: 1;
+        font-weight: 600;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .reader-body {
+        max-height: calc(100vh - 140px);
+        overflow: auto;
+        line-height: 1.7;
+        font-size: 13px;
+        word-break: break-word;
+      }
+      /* 配置标签：分组卡片，配置项之间分隔清晰 */
+      .cfg-group {
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        padding: 10px 12px 2px;
+        margin-bottom: 12px;
+      }
+      .cfg-title {
+        font-weight: 600;
+        font-size: 12px;
+        color: #898989;
+        margin-bottom: 8px;
+      }
+      #view-config .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
+      #view-config label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+      }
+      #view-config input[type='checkbox'],
+      #view-config input[type='radio'] {
+        accent-color: #f5c518;
+      }
+      #view-config input[type='color'] {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        cursor: pointer;
+        background: transparent;
+      }
+      #backend-status {
+        font-size: 11px;
+        color: #898989;
+      }
+      #backend-status.online {
+        color: #32d74b;
+      }
+      #backend-status.offline {
+        color: #c7372f;
+      }
+      #backend-retry {
+        margin-top: 0;
+        padding: 2px 10px;
+        font-size: 11px;
+      }
+      #backend-help {
+        color: #898989;
+        font-size: 11px;
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+      #backend-help code {
+        font-family: Consolas, monospace;
+        background: rgba(127, 127, 127, 0.12);
+        padding: 0 4px;
+        border-radius: 3px;
+      }
+      #paused-hint {
+        border: 1px solid #e8b819;
+        background: rgba(255, 210, 52, 0.12);
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button data-view="marks" class="active" data-i18n="sidepanel_nav_marks"></button>
+      <button data-view="preview" data-i18n="sidepanel_nav_preview"></button>
+      <button data-view="config" data-i18n="sidepanel_nav_config"></button>
+    </nav>
+    <div class="msg" id="msg"></div>
+
+    <!-- 标记（默认）：当前页标注列表 -->
+    <section id="view-marks">
+      <div class="toggles">
+        <label><input type="checkbox" id="site-toggle" checked /> <span data-i18n="sidepanel_toggle_site"></span></label>
+        <label><input type="checkbox" id="marks-toggle" checked /> <span data-i18n="sidepanel_toggle_marks"></span></label>
+      </div>
+      <div class="bar">
+        <span class="title" data-i18n="sidepanel_marks_title"></span>
+        <span class="count" id="pending-count" hidden></span>
+        <button id="sync-btn" data-i18n="sidepanel_sync"></button>
+        <button id="shot-btn" class="primary" data-i18n="sidepanel_shot"></button>
+      </div>
+      <div id="unsupported" hidden>
+        <span data-i18n="sidepanel_unsupported"></span>
+      </div>
+      <ul class="items" id="items"></ul>
+    </section>
+
+    <!-- 保存：收藏 + 最近收藏 + 阅读预览 -->
+    <section id="view-preview" hidden>
+      <div class="pv-group">
+        <div class="bar">
+          <span class="title" data-i18n="sidepanel_clip_title"></span>
+          <button id="clip-btn" class="primary" data-i18n="sidepanel_clip_btn"></button>
+        </div>
+        <div id="clip-preview" hidden>
+          <div class="pv-head">
+            <span class="pv-title"></span>
+            <span class="pv-mode"></span>
+          </div>
+          <div class="pv-snippet"></div>
+          <div class="pv-imgs" hidden>
+            <label><input type="checkbox" id="pv-imgs-toggle" checked /> 🖼 <span id="pv-imgs-count"></span> <span data-i18n="sidepanel_pv_save_imgs"></span></label>
+          </div>
+          <div class="pv-ops">
+            <button id="pv-save" class="primary" data-i18n="sidepanel_save"></button>
+            <button id="pv-full" data-i18n="sidepanel_pv_full"></button>
+            <button id="pv-cancel" data-i18n="sidepanel_cancel"></button>
+          </div>
+        </div>
+        <div class="hint" style="margin-top: 12px" data-i18n="sidepanel_region_title"></div>
+        <div id="region-row">
+          <span id="region-chip" class="chip" hidden></span>
+          <button id="region-clear" hidden data-i18n="sidepanel_region_clear"></button>
+          <button id="region-pick" class="primary" data-i18n="sidepanel_region_pick"></button>
+        </div>
+        <div class="hint" id="region-msg" data-i18n="sidepanel_region_hint"></div>
+        <details class="adv">
+          <summary data-i18n="sidepanel_adv_summary"></summary>
+          <div id="clip-rule-row">
+            <input type="text" id="clip-rule-input" placeholder=".ProseMirror" />
+            <button id="clip-rule-save" data-i18n="sidepanel_save"></button>
+          </div>
+        </details>
+        <div class="hint" style="margin-top: 12px" data-i18n="sidepanel_recent_clips"></div>
+        <ul id="recent-clips"></ul>
+      </div>
+      <div id="reader" hidden>
+        <div class="rd-head">
+          <button id="reader-back" data-i18n="sidepanel_reader_back"></button>
+          <span class="rd-title"></span>
+          <button id="reader-open" data-i18n="sidepanel_reader_open"></button>
+        </div>
+        <div class="reader-body" id="reader-body"></div>
+      </div>
+    </section>
+
+    <!-- 设置：插件开关 / 页面展示 / 后端服务 -->
+    <section id="view-config" hidden>
+      <div id="paused-hint" hidden></div>
+      <div class="cfg-group">
+        <div class="cfg-title" data-i18n="sidepanel_cfg_extension"></div>
+        <div class="row">
+          <label><input type="checkbox" id="master-toggle" checked /> <span data-i18n="sidepanel_cfg_master"></span></label>
+        </div>
+      </div>
+      <div class="cfg-group">
+        <div class="cfg-title" data-i18n="sidepanel_cfg_display"></div>
+        <div class="row">
+          <label><input type="radio" name="display-mode" value="show" checked /> <span data-i18n="sidepanel_display_show"></span></label>
+          <label><input type="radio" name="display-mode" value="sidebar" /> <span data-i18n="sidepanel_display_sidebar"></span></label>
+        </div>
+        <div class="row">
+          <span data-i18n="sidepanel_cfg_colors"></span>
+          <input type="color" id="color-0" value="#ffd234" />
+          <input type="color" id="color-1" value="#34c759" />
+          <input type="color" id="color-2" value="#2f80ed" />
+          <input type="color" id="color-3" value="#ff69b4" />
+          <input type="color" id="color-4" value="#ff453a" />
+          <button id="color-save" data-i18n="sidepanel_save"></button>
+        </div>
+      </div>
+      <div class="cfg-group">
+        <div class="cfg-title" data-i18n="sidepanel_cfg_backend"></div>
+        <div class="row">
+          <input type="text" id="backend-url-input" placeholder="http://127.0.0.1:8765" />
+          <button id="backend-url-save" data-i18n="sidepanel_save"></button>
+        </div>
+        <div class="row">
+          <span id="backend-status">…</span>
+          <button id="backend-retry" hidden data-i18n="sidepanel_retry"></button>
+        </div>
+        <div class="row" id="backend-help" hidden>
+          <span data-i18n="sidepanel_backend_help_a"></span><code>~/kb</code><span data-i18n="sidepanel_backend_help_b"></span><code>npm install</code><span data-i18n="sidepanel_backend_help_sep"></span><code>npm run build</code><span data-i18n="sidepanel_backend_help_sep"></span><code>npm run start:server</code><span data-i18n="sidepanel_backend_help_c"></span><code>http://127.0.0.1:8765</code><span data-i18n="sidepanel_backend_help_d"></span><code>PORT</code><span data-i18n="sidepanel_backend_help_e"></span>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="./sidepanel.ts"></script>
+  </body>
+</html>

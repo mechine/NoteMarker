@@ -1,0 +1,366 @@
+{
+  "extName": { "message": "NoteMarker" },
+  "extShortDesc": { "message": "保存页面与笔记到本地 notemarker 知识库" },
+  "extActionTitle": { "message": "保存到 notemarker" },
+
+  "options_title": { "message": "NoteMarker 管理页" },
+  "options_nav_readlist": { "message": "阅读列表" },
+  "options_nav_annotations": { "message": "历史标注" },
+  "options_nav_sync": { "message": "标注同步" },
+  "options_nav_settings": { "message": "设置" },
+  "options_filter_all": { "message": "全部" },
+  "options_filter_unread": { "message": "未读" },
+  "options_filter_read": { "message": "已读" },
+  "options_filter_archived": { "message": "已归档" },
+  "options_refresh": { "message": "刷新" },
+  "options_sync_annotations": { "message": "同步标注" },
+  "options_readlist_offline": {
+    "message": "本地服务未运行，无法获取阅读列表。请启动 notemarker 后端后重试。"
+  },
+  "options_retry": { "message": "重试" },
+  "options_pager_prev": { "message": "上一页" },
+  "options_pager_next": { "message": "下一页" },
+  "options_filter_all_sites": { "message": "全部站点" },
+  "options_filter_all_types": { "message": "全部类型" },
+  "options_type_highlight": { "message": "高亮" },
+  "options_type_underline": { "message": "下划线" },
+  "options_type_image": { "message": "图片" },
+  "options_filter_all_notes": { "message": "全部批注" },
+  "options_filter_with_note": { "message": "有批注" },
+  "options_filter_without_note": { "message": "无批注" },
+  "options_search_ph": { "message": "搜索引用/批注…" },
+  "options_export_json": { "message": "导出 JSON" },
+  "options_export_md": { "message": "导出 MD" },
+  "options_annotations_offline": {
+    "message": "本地服务未运行，无法获取历史标注。请启动 notemarker 后端后重试。"
+  },
+  "options_pager_more": { "message": "加载更多" },
+  "options_detail_open_page": { "message": "打开原页" },
+  "options_detail_close": { "message": "关闭" },
+  "options_sync_now": { "message": "立即同步" },
+  "options_qs_title": { "message": "开始使用 notemarker" },
+  "options_qs_intro_a": {
+    "message": "本扩展在网页上划线标注并收藏到本机知识库，需要配合本地运行的 notemarker 后端（数据仅保存在本机"
+  },
+  "options_qs_intro_b": { "message": "，不上传任何数据）。按以下步骤启动：" },
+  "options_qs_step1a": { "message": "安装" },
+  "options_qs_step1b": { "message": "（18 或更高版本）" },
+  "options_qs_step2": { "message": "获取 notemarker 项目并进入项目目录" },
+  "options_qs_step3a": { "message": "执行" },
+  "options_qs_step3b": { "message": "，再执行" },
+  "options_qs_step4a": { "message": "执行" },
+  "options_qs_step4b": { "message": "启动本地服务（默认 http://127.0.0.1:8765）" },
+  "options_qs_step5": {
+    "message": "回到本页，点击下方 Service Status 的「重试」，显示「在线」后即可在任意网页划线标注"
+  },
+  "options_backend_help_a": { "message": "本地后端的访问地址，默认" },
+  "options_backend_help_b": { "message": "，通常无需修改（仅当用" },
+  "options_backend_help_c": { "message": "环境变量改过端口时才需要）。安装与启动方法见上方「开始使用」。" },
+  "options_backend_save": { "message": "保存后端地址" },
+  "options_save_config": { "message": "保存配置" },
+  "options_cache_limit_label": {
+    "message": "本地标注缓存上限（条，0 = 永不清理；超限后在同步完成时按最久未访问页面整页清理，被清页面重访时自动从后端恢复）"
+  },
+  "options_cache_save": { "message": "保存上限" },
+  "options_loading": { "message": "加载中…" },
+  "options_readlist_empty": { "message": "（没有符合条件的项目）" },
+  "options_ann_count": {
+    "message": "标注 $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_mark_unread": { "message": "标记未读" },
+  "options_mark_read": { "message": "标记已读" },
+  "options_archive": { "message": "归档" },
+  "options_unarchive": { "message": "取消归档" },
+  "options_preview": { "message": "预览" },
+  "options_copy_path": { "message": "复制路径" },
+  "options_copied": { "message": "已复制" },
+  "options_copy_failed": { "message": "复制失败" },
+  "options_delete": { "message": "删除" },
+  "options_pager_info": {
+    "message": "第 $P1$ / $P2$ 页 · 共 $P3$ 条",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" },
+      "p3": { "content": "$3" }
+    }
+  },
+  "options_offline_short": { "message": "本地服务未运行" },
+  "options_preview_no_content": { "message": "该页面没有收藏正文可预览" },
+  "options_status_update_failed": { "message": "状态更新失败" },
+  "options_delete_confirm": {
+    "message": "确定删除「$P1$」？\n将删除后端数据库记录与导出的内容文件，此操作不可恢复。",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_delete_failed": { "message": "删除失败" },
+  "options_sync_empty": { "message": "（本地暂无划线/批注记录）" },
+  "options_sync_pending_count": {
+    "message": "待同步 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_all_synced": { "message": "全部已同步" },
+  "options_syncing": { "message": "同步中…" },
+  "options_sync_failed_offline": {
+    "message": "同步失败：本地服务未运行，条目已保留待重试"
+  },
+  "options_sync_pushed": {
+    "message": "推送 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_failed_n": {
+    "message": "失败 $P1$ 条（可重试）",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_deleted": {
+    "message": "删除 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_delete_failed_n": {
+    "message": "删除失败 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_sync_done_prefix": { "message": "同步完成：" },
+  "options_sep": { "message": "，" },
+  "options_chip_pending": { "message": "待同步" },
+  "options_chip_synced": { "message": "已同步" },
+  "options_empty_quote": { "message": "（空引用）" },
+  "options_hist_loaded": {
+    "message": "已加载 $P1$ / 共 $P2$ 条",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_hist_empty": { "message": "（当前筛选条件下没有标注）" },
+  "options_anchor_ctx": {
+    "message": "…$P1$【引用】$P2$…",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_note_prefix": {
+    "message": "批注：$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_source_prefix": {
+    "message": "来源：$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_md_title": { "message": "# NoteMarker 历史标注导出" },
+  "options_md_count": {
+    "message": "共 $P1$ 条 · 导出时间 $P2$",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "options_export_offline": { "message": "后端未连接，无法导出" },
+  "options_export_failed_offline": { "message": "导出失败：本地服务未运行" },
+  "options_export_empty": { "message": "当前筛选条件下没有标注，未导出" },
+  "options_export_done": {
+    "message": "已导出 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_checking": { "message": "检测中…" },
+  "options_ping_online": {
+    "message": "在线 · v$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "options_ping_offline": {
+    "message": "未连接本地服务。请按上方「开始使用 notemarker」的步骤启动后端，然后点击「重试」。"
+  },
+  "options_saved": { "message": "已保存" },
+  "options_cache_invalid": { "message": "请输入 ≥0 的数字（0 = 永不清理）" },
+
+  "sidepanel_title": { "message": "NoteMarker 标注" },
+  "sidepanel_nav_marks": { "message": "标记" },
+  "sidepanel_nav_preview": { "message": "保存" },
+  "sidepanel_nav_config": { "message": "设置" },
+  "sidepanel_toggle_site": { "message": "本站启用划线" },
+  "sidepanel_toggle_marks": { "message": "显示标记" },
+  "sidepanel_marks_title": { "message": "本页标注" },
+  "sidepanel_sync": { "message": "同步" },
+  "sidepanel_shot": { "message": "📷 截图标记" },
+  "sidepanel_unsupported": {
+    "message": "此页面不支持划线（浏览器内置页面或非 http/https），无法展示标注。"
+  },
+  "sidepanel_not_activated": {
+    "message": "本页尚未激活划线：点击工具栏上的 notemarker 图标即可激活（每次页面加载需激活一次）。"
+  },
+  "sidepanel_marks_empty": { "message": "本页还没有划线或批注。选中网页文字即可开始。" },
+  "sidepanel_pending_count": {
+    "message": "待同步 $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_img_quote": {
+    "message": "图 · $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_img_saved": { "message": " · 已存图" },
+  "sidepanel_locate_hint": { "message": "点击定位到正文" },
+  "sidepanel_shot_title": { "message": "截图标注（无页内定位）" },
+  "sidepanel_no_image": { "message": "未存图" },
+  "sidepanel_no_note": { "message": "（无批注）" },
+  "sidepanel_chip_pending": { "message": "待同步" },
+  "sidepanel_chip_synced": { "message": "已同步" },
+  "sidepanel_type_screenshot": { "message": "截图" },
+  "sidepanel_edit": { "message": "编辑" },
+  "sidepanel_delete": { "message": "删除" },
+  "sidepanel_note_ph": { "message": "写点想法…（Ctrl+Enter 保存）" },
+  "sidepanel_save": { "message": "保存" },
+  "sidepanel_cancel": { "message": "取消" },
+  "sidepanel_saved_pending": { "message": "已保存（待同步）" },
+  "sidepanel_locate_failed": { "message": "该条当前无法定位（正文可能已变化）" },
+  "sidepanel_locate_unsupported": { "message": "此页面不支持划线定位" },
+  "sidepanel_shot_unsupported": { "message": "此页面不支持截图标记" },
+  "sidepanel_shot_start_hint": { "message": "请在页面上框选截图区域，Esc 取消" },
+  "sidepanel_shot_no_receiver": { "message": "划线未在此页激活：请点击工具栏图标打开面板激活后重试" },
+  "sidepanel_shot_sw_stale": { "message": "后台服务未更新：请在 chrome://extensions 重新加载扩展后重试" },
+  "sidepanel_shot_disabled": { "message": "划线未启用：请检查「本站启用划线」与「启用插件」开关" },
+  "sidepanel_paused_master": {
+    "message": "插件已停用：页面不显示标记、无法新建。到\"设置\"页开启\"启用插件\"恢复。"
+  },
+  "sidepanel_paused_site": { "message": "划线已在本站停用：到\"标记\"页开启\"本站启用划线\"恢复。" },
+  "sidepanel_checking": { "message": "检测中…" },
+  "sidepanel_ping_online": {
+    "message": "在线 · v$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_offline_short": { "message": "本地服务未运行" },
+  "sidepanel_backend_saved": { "message": "后端地址已保存" },
+  "sidepanel_colors_saved": { "message": "高亮颜色已保存，所有打开页面即时生效" },
+  "sidepanel_recent_offline": { "message": "本地服务未运行，无法获取最近收藏" },
+  "sidepanel_recent_empty": { "message": "还没有收藏记录" },
+  "sidepanel_loading": { "message": "加载中…" },
+  "sidepanel_reader_no_content": { "message": "该页面没有收藏正文可预览（可能只有标注）" },
+  "sidepanel_clip_title": { "message": "收藏" },
+  "sidepanel_clip_btn": { "message": "收藏本页" },
+  "sidepanel_pv_save_imgs": { "message": "本地保存图片" },
+  "sidepanel_pv_full": { "message": "改用整页" },
+  "sidepanel_region_title": { "message": "收藏区域" },
+  "sidepanel_region_clear": { "message": "清除" },
+  "sidepanel_region_pick": { "message": "框选收藏区域" },
+  "sidepanel_region_cancel": { "message": "取消框选" },
+  "sidepanel_region_cancelled": { "message": "已取消框选" },
+  "sidepanel_region_picking_hint": { "message": "请到页面选中一段正文，插件将自动识别收藏区域…" },
+  "sidepanel_region_start_failed": { "message": "发起框选失败" },
+  "sidepanel_region_cleared": { "message": "已清除本站规则，回到自动识别" },
+  "sidepanel_region_set_len": {
+    "message": "已设收藏区域 · $P1$ · 约 $P2$ 字",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_region_none": { "message": "未识别到区域" },
+  "sidepanel_rule_saved": { "message": "收藏区域已保存（本站生效）" },
+  "sidepanel_region_set": {
+    "message": "已设收藏区域 · $P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_region_hint": { "message": "未设置时自动识别正文" },
+  "sidepanel_recent_clips": { "message": "最近收藏" },
+  "sidepanel_reader_back": { "message": "← 返回" },
+  "sidepanel_reader_open": { "message": "打开原文" },
+  "sidepanel_cfg_extension": { "message": "插件" },
+  "sidepanel_cfg_master": { "message": "启用插件" },
+  "sidepanel_cfg_display": { "message": "页面展示" },
+  "sidepanel_display_show": { "message": "标注显示" },
+  "sidepanel_display_sidebar": { "message": "仅侧边栏" },
+  "sidepanel_cfg_colors": { "message": "高亮颜色：" },
+  "sidepanel_cfg_backend": { "message": "后端服务" },
+  "sidepanel_retry": { "message": "重试" },
+  "sidepanel_backend_help_a": { "message": "需要本机运行的 notemarker 后端（数据仅存本机" },
+  "sidepanel_backend_help_b": { "message": "，不上传）。启动：在 notemarker 项目目录执行" },
+  "sidepanel_backend_help_sep": { "message": " → " },
+  "sidepanel_backend_help_c": { "message": "。默认地址" },
+  "sidepanel_backend_help_d": { "message": "，仅当用" },
+  "sidepanel_backend_help_e": { "message": "改过端口时才需修改上面的地址。" },
+  "sidepanel_mode_rule": { "message": "本站规则" },
+  "sidepanel_mode_selection": { "message": "选区" },
+  "sidepanel_mode_smart": { "message": "智能提取" },
+  "sidepanel_mode_selector": { "message": "兜底容器" },
+  "sidepanel_mode_full": { "message": "整页" },
+  "sidepanel_pv_no_title": { "message": "(无标题)" },
+  "sidepanel_pv_mode_len": {
+    "message": "$P1$ · $P2$ 字",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_pv_no_text": { "message": "(无文本)" },
+  "sidepanel_pv_imgs_count": {
+    "message": "图片 $P1$ 张",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_clipping": { "message": "采集中…" },
+  "sidepanel_clip_failed": { "message": "收藏发起失败" },
+  "sidepanel_saving_imgs": { "message": "正在本地化图片并保存…" },
+  "sidepanel_img_stats": {
+    "message": " · 图片 $P1$/$P2$ 张本地化",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "sidepanel_saved_dup": {
+    "message": "已存在：$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_saved_path": {
+    "message": "已保存：$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_export_offline": { "message": "本地服务未运行，未导出" },
+  "sidepanel_export_failed": {
+    "message": "导出失败：$P1$",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_unknown_error": { "message": "未知错误" },
+  "sidepanel_export_send_failed": { "message": "导出发起失败" },
+  "sidepanel_refull": { "message": "按整页重新采集…" },
+  "sidepanel_refull_failed": { "message": "重新采集失败" },
+  "sidepanel_syncing": { "message": "同步中…" },
+  "sidepanel_sync_failed_offline": { "message": "同步失败：本地服务未运行，条目已保留待重试" },
+  "sidepanel_sync_pushed": {
+    "message": "推送 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_failed_n": {
+    "message": "失败 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_deleted": {
+    "message": "删除 $P1$ 条",
+    "placeholders": { "p1": { "content": "$1" } }
+  },
+  "sidepanel_sync_done_prefix": { "message": "同步完成：" },
+  "sidepanel_sep": { "message": "，" },
+
+  "menu_sync": { "message": "同步标注到本地服务" },
+  "menu_open_manage": { "message": "打开管理页（阅读列表 / 标注同步）" },
+  "menu_master": { "message": "启用插件" },
+  "menu_site": { "message": "在此站点启用划线" },
+  "menu_marks": { "message": "显示标记" },
+
+  "hl_annotate": { "message": "标注" },
+  "hl_note_badge": { "message": "批注" },
+  "hl_dot_title": { "message": "高亮" },
+  "hl_write_note": { "message": "写批注" },
+  "hl_reason_switch_shot": { "message": "已切换到截图模式" },
+  "hl_shot_hint": { "message": "拖拽框选截图区域，Esc 取消" },
+  "hl_screenshot_quote": {
+    "message": "截图 $P1$×$P2$",
+    "placeholders": {
+      "p1": { "content": "$1" },
+      "p2": { "content": "$2" }
+    }
+  },
+  "hl_region_failed": {
+    "message": "无法识别收藏区域（选区太短或命中整页），请选一段正文重试"
+  },
+
+  "common_truncated": { "message": "（内容过长，已截断显示）" }
+}

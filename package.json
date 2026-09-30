@@ -1,0 +1,20 @@
+{
+  "name": "notemarker",
+  "version": "1.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "workspaces": [
+    "server",
+    "extension"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev:server": "npm run dev -w server",
+    "dev:extension": "npm run dev -w extension",
+    "start:server": "npm run start -w server"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.21.5": true
+  }
+}

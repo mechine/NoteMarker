@@ -1,0 +1,27 @@
+# 依赖
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.pnp
+.pnp.js
+
+# 构建产物
+server/dist/
+extension/dist/
+extension/*.local
+/out-tsc
+/tmp
+
+# 本地工作区与设计文档（不上传）
+/stash/
+/openspec/
+/.claude/
+/.idea/
+.vscode/
+
+# 日志与系统文件
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini

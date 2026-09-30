@@ -1,0 +1,528 @@
+<!doctype html>
+<!-- 管理页三视图：阅读列表（specs/extension-readlist）/ 标注同步（specs/extension-sync）/ 设置（原有） -->
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title data-i18n="options_title"></title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 20px 24px 32px;
+        font: 400 13px sans-serif;
+        color: #3d3d3d;
+        background: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #d9d9d9;
+          background: #1e1e1e;
+        }
+        .card input,
+        nav button,
+        .bar button,
+        .bar select,
+        .pager button,
+        .item button {
+          color: #d9d9d9;
+        }
+      }
+      h1 {
+        font-size: 15px;
+        margin: 20px 0 8px;
+      }
+      nav {
+        display: flex;
+        gap: 4px;
+        border-bottom: 1px solid #d8d8d8;
+        margin-bottom: 16px;
+      }
+      nav button {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        padding: 8px 14px;
+        font: 400 13px sans-serif;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      nav button.active {
+        border-bottom-color: #ffd234;
+        font-weight: 600;
+      }
+      .card {
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+        max-width: 720px;
+      }
+      .card label {
+        display: block;
+        margin: 10px 0 4px;
+        color: #898989;
+      }
+      .card input[type='text'],
+      .card input[type='number'] {
+        width: 96%;
+        padding: 6px;
+        border: 1px solid #8e8e93;
+        border-radius: 4px;
+        background-color: transparent;
+        box-sizing: border-box;
+      }
+      .card input:focus-visible {
+        border-color: #2f81f7;
+        outline: none;
+      }
+      .card .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .card .checkbox-row label {
+        margin: 0;
+        color: inherit;
+      }
+      button {
+        margin-top: 12px;
+        padding: 6px 18px;
+        border: none;
+        border-radius: 5px;
+        background-color: #ffd234;
+        color: #3d3d3d;
+        cursor: pointer;
+        font: 400 12px sans-serif;
+      }
+      button:hover {
+        background-color: #ffea9f;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      #ping-status {
+        font-size: 12px;
+        color: #898989;
+        line-height: 20px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      #ping-status.online {
+        color: #32d74b;
+      }
+      #ping-status.offline {
+        color: #c7372f;
+      }
+      #ping-retry {
+        margin-top: 8px;
+      }
+      .help {
+        font-size: 12px;
+        color: #898989;
+        line-height: 1.6;
+        margin: 0 0 8px;
+      }
+      .help code {
+        font-family: Consolas, Monaco, monospace;
+        background: rgba(127, 127, 127, 0.12);
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+      #quickstart-card {
+        border-color: #e8b819;
+        background: rgba(255, 210, 52, 0.08);
+      }
+      #quickstart-card .qs-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      #quickstart-card ol {
+        margin: 8px 0 0;
+        padding-left: 20px;
+        line-height: 1.9;
+      }
+      #quickstart-card a {
+        color: inherit;
+      }
+      .msg {
+        font-size: 12px;
+        margin-top: 8px;
+        min-height: 16px;
+      }
+      .msg.ok {
+        color: #32d74b;
+      }
+      .msg.err {
+        color: #c7372f;
+      }
+      /* 阅读列表 / 同步视图 */
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        max-width: 720px;
+      }
+      .bar button,
+      .pager button,
+      .item button {
+        margin-top: 0;
+        padding: 5px 12px;
+        font: 400 12px sans-serif;
+      }
+      .bar select {
+        padding: 5px 6px;
+        border: 1px solid #8e8e93;
+        border-radius: 4px;
+        background: transparent;
+      }
+      .bar .msg {
+        margin-top: 0;
+      }
+      #readlist-offline {
+        border: 1px solid #e5b5b2;
+        border-radius: 4px;
+        padding: 16px;
+        color: #c7372f;
+        max-width: 720px;
+      }
+      ul.items {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-width: 720px;
+      }
+      .item {
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+      }
+      .item .line1 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .item a.title {
+        font-weight: 600;
+        color: inherit;
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+      }
+      .item a.title:hover {
+        text-decoration: underline;
+      }
+      .item .meta {
+        color: #898989;
+        font-size: 12px;
+        margin-top: 4px;
+        word-break: break-all;
+      }
+      .item .ops {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .item .ops button {
+        background: #f2f2f2;
+        color: inherit;
+      }
+      .item .ops button:hover {
+        background: #e3e3e3;
+      }
+      .item .ops button.danger {
+        color: #c7372f;
+      }
+      .chip {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        border: 1px solid #bbb;
+        color: #898989;
+      }
+      .chip.unread {
+        border-color: #2f81f7;
+        color: #2f81f7;
+      }
+      .chip.read {
+        border-color: #32d74b;
+        color: #32d74b;
+      }
+      .chip.archived {
+        border-color: #8e8e93;
+        color: #8e8e93;
+      }
+      .chip.pending {
+        border-color: #c2410c;
+        color: #c2410c;
+      }
+      .chip.synced {
+        border-color: #32d74b;
+        color: #32d74b;
+      }
+      .dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        vertical-align: -1px;
+      }
+      .pager {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        max-width: 720px;
+      }
+      .pager .info {
+        color: #898989;
+        font-size: 12px;
+      }
+      .quote {
+        color: inherit;
+        border-left: 3px solid #f5c518;
+        padding-left: 8px;
+        margin-bottom: 4px;
+      }
+      .note {
+        color: #898989;
+        font-size: 12px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      /* 历史标注视图（specs/annotation-history） */
+      .item.clickable {
+        cursor: pointer;
+      }
+      .item.clickable:hover {
+        border-color: #ffd234;
+      }
+      .hist-quote {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        word-break: break-all;
+      }
+      .hist-note {
+        margin-top: 4px;
+        word-break: break-all;
+      }
+      .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .type-label {
+        font-size: 12px;
+        color: #898989;
+        flex-shrink: 0;
+      }
+      dialog#annotation-detail {
+        width: min(640px, 92vw);
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        padding: 16px 18px;
+      }
+      dialog#annotation-detail::backdrop {
+        background: rgba(0, 0, 0, 0.35);
+      }
+      .detail-meta {
+        color: #898989;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .detail-quote {
+        border-left: 3px solid #f5c518;
+        padding-left: 8px;
+        margin-bottom: 8px;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+      .detail-ctx {
+        color: #898989;
+        font-size: 12px;
+        word-break: break-all;
+        margin-bottom: 8px;
+      }
+      .detail-note {
+        margin-bottom: 8px;
+        word-break: break-all;
+      }
+      .detail-page {
+        margin-bottom: 10px;
+        word-break: break-all;
+      }
+      .detail-ops {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button data-view="readlist" class="active" data-i18n="options_nav_readlist"></button>
+      <button data-view="annotations" data-i18n="options_nav_annotations"></button>
+      <button data-view="sync" data-i18n="options_nav_sync"></button>
+      <button data-view="settings" data-i18n="options_nav_settings"></button>
+    </nav>
+
+    <!-- 阅读列表（specs/extension-readlist） -->
+    <section id="view-readlist">
+      <div class="bar">
+        <select id="readlist-filter">
+          <option value="" data-i18n="options_filter_all"></option>
+          <option value="unread" data-i18n="options_filter_unread"></option>
+          <option value="read" data-i18n="options_filter_read"></option>
+          <option value="archived" data-i18n="options_filter_archived"></option>
+        </select>
+        <button id="readlist-refresh" data-i18n="options_refresh"></button>
+        <button id="readlist-sync" data-i18n="options_sync_annotations"></button>
+        <span class="msg" id="readlist-msg"></span>
+      </div>
+      <div id="readlist-offline" hidden>
+        <span data-i18n="options_readlist_offline"></span>
+        <button id="readlist-retry" data-i18n="options_retry"></button>
+      </div>
+      <ul class="items" id="readlist-items"></ul>
+      <div class="pager">
+        <button id="readlist-prev" data-i18n="options_pager_prev"></button>
+        <span class="info" id="readlist-pageinfo"></span>
+        <button id="readlist-next" data-i18n="options_pager_next"></button>
+      </div>
+    </section>
+
+    <!-- 历史标注（specs/annotation-history）：跨页浏览 server 全部标注，筛选/搜索/详情/导出 -->
+    <section id="view-annotations" hidden>
+      <div class="bar">
+        <select id="annotations-site-filter">
+          <option value="" data-i18n="options_filter_all_sites"></option>
+        </select>
+        <select id="annotations-type-filter">
+          <option value="" data-i18n="options_filter_all_types"></option>
+          <option value="highlight" data-i18n="options_type_highlight"></option>
+          <option value="underline" data-i18n="options_type_underline"></option>
+        </select>
+        <select id="annotations-note-filter">
+          <option value="" data-i18n="options_filter_all_notes"></option>
+          <option value="true" data-i18n="options_filter_with_note"></option>
+          <option value="false" data-i18n="options_filter_without_note"></option>
+        </select>
+        <input type="search" id="annotations-search" data-i18n-attr="placeholder:options_search_ph" />
+        <button id="annotations-export-json" data-i18n="options_export_json"></button>
+        <button id="annotations-export-md" data-i18n="options_export_md"></button>
+        <span class="msg" id="annotations-msg"></span>
+      </div>
+      <div id="annotations-offline" hidden>
+        <span data-i18n="options_annotations_offline"></span>
+        <button id="annotations-retry" data-i18n="options_retry"></button>
+      </div>
+      <ul class="items" id="annotations-items"></ul>
+      <div class="pager">
+        <button id="annotations-more" data-i18n="options_pager_more"></button>
+        <span class="info" id="annotations-pageinfo"></span>
+      </div>
+
+      <!-- 标注详情弹窗（specs/annotation-history 标注详情弹窗） -->
+      <dialog id="annotation-detail">
+        <div class="detail-meta" id="detail-meta"></div>
+        <div class="detail-quote" id="detail-quote"></div>
+        <div class="detail-ctx" id="detail-prefix"></div>
+        <div class="detail-note" id="detail-note"></div>
+        <div class="detail-page" id="detail-page"></div>
+        <div class="detail-ops">
+          <button id="detail-open-page" data-i18n="options_detail_open_page"></button>
+          <button id="detail-close" data-i18n="options_detail_close"></button>
+        </div>
+      </dialog>
+    </section>
+
+    <!-- 标注同步（specs/extension-sync 同步状态可见） -->
+    <section id="view-sync" hidden>
+      <div class="bar">
+        <button id="sync-now" data-i18n="options_sync_now"></button>
+        <span class="msg" id="sync-summary"></span>
+      </div>
+      <ul class="items" id="sync-items"></ul>
+    </section>
+
+    <!-- 设置（原有） -->
+    <section id="view-settings" hidden>
+      <div class="card" id="quickstart-card" hidden>
+        <div class="qs-title" data-i18n="options_qs_title"></div>
+        <div class="help">
+          <span data-i18n="options_qs_intro_a"></span><code>~/kb</code><span data-i18n="options_qs_intro_b"></span>
+        </div>
+        <ol>
+          <li><span data-i18n="options_qs_step1a"></span><a href="https://nodejs.org" target="_blank" rel="noopener noreferrer">Node.js</a><span data-i18n="options_qs_step1b"></span></li>
+          <li data-i18n="options_qs_step2"></li>
+          <li><span data-i18n="options_qs_step3a"></span><code>npm install</code><span data-i18n="options_qs_step3b"></span><code>npm run build</code></li>
+          <li><span data-i18n="options_qs_step4a"></span><code>npm run start:server</code><span data-i18n="options_qs_step4b"></span></li>
+          <li data-i18n="options_qs_step5"></li>
+        </ol>
+      </div>
+
+      <h1>Backend URL</h1>
+      <div class="card">
+        <div class="help">
+          <span data-i18n="options_backend_help_a"></span><code>http://127.0.0.1:8765</code><span data-i18n="options_backend_help_b"></span><code>PORT</code><span data-i18n="options_backend_help_c"></span>
+        </div>
+        <input type="text" id="backend-url" placeholder="http://127.0.0.1:8765" />
+        <button id="save-backend-btn" data-i18n="options_backend_save"></button>
+        <div class="msg" id="backend-msg"></div>
+      </div>
+
+      <h1>Service Status</h1>
+      <div class="card">
+        <div id="ping-status">Checking…</div>
+        <button id="ping-retry" data-i18n="options_retry"></button>
+      </div>
+
+      <h1>Backend Config</h1>
+      <div class="card">
+        <label for="dedupe-window">dedupeWindow (seconds)</label>
+        <input type="number" id="dedupe-window" min="0" step="1" />
+
+        <label for="auto-export-delay">autoExportDelay (seconds)</label>
+        <input type="number" id="auto-export-delay" min="0" step="1" />
+
+        <label for="max-cache-size">maxCacheSize (bytes)</label>
+        <input type="number" id="max-cache-size" min="0" step="1" />
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="auto-export-enabled" />
+          <label for="auto-export-enabled">autoExportEnabled</label>
+        </div>
+
+        <button id="save-config-btn" data-i18n="options_save_config"></button>
+        <div class="msg" id="config-msg"></div>
+      </div>
+
+      <!-- 本地缓存上限（specs/extension-sync 本地缓存上限与整页桶清理） -->
+      <h1>Local Annotation Cache</h1>
+      <div class="card">
+        <label for="cache-limit" data-i18n="options_cache_limit_label"></label>
+        <input type="number" id="cache-limit" min="0" step="1" />
+        <button id="save-cache-limit-btn" data-i18n="options_cache_save"></button>
+        <div class="msg" id="cache-limit-msg"></div>
+      </div>
+    </section>
+
+    <script type="module" src="./options.ts"></script>
+  </body>
+</html>
