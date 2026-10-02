@@ -31,7 +31,7 @@ npm run start:server # 启动本地后端 http://127.0.0.1:8765（数据落在 ~
 
 - `extension/` — Chrome 扩展（Manifest V3，Vite + @crxjs）。点击激活模型：脚本经 `activeTab` 按需注入，无宽泛 host 权限
 - `server/` — 本地后端（Express + TypeScript + `node:sqlite`），仅监听 `127.0.0.1:8765`（`PORT` 可覆盖）
-- 数据落点：默认 `~/kb`（环境变量 `KB_HOME` 覆盖）——`kb.db`（SQLite，WAL）、`config.json`、`content/`（`{pageId}.md|.json|.html` 与 `images/{hash}.*`）
+- 数据落点：基础目录默认 `~/kb`（环境变量 `KB_HOME` 覆盖，多项目共享），本项目数据全部在其子目录 `~/kb/notemarker/` 下——`kb.db`（SQLite，WAL）、`config.json`、`content/`（`{pageId}.md|.anno.json|.html` 与 `images/{hash}.*`；`.anno.json` 为注解侧车协议文件）
 
 ## HTTP 接口（核心集）
 

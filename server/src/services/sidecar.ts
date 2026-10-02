@@ -1,16 +1,17 @@
-// 侧车快照（specs kb-rebuild）：content/{pageId}.json 是 pages + annotations + messages 的全量快照，
+// 侧车快照（specs kb-rebuild）：content/{pageId}.anno.json 是 pages + annotations + messages 的全量快照，
+// 二级后缀 .anno.json 定位为注解通用协议文件（annotation sidecar），与普通 .json 区分；
 // 坏库重建（src/rebuild.ts）从此文件恢复。写入时机（用户约定：不为单次标注付文件 IO）：
 // - 剪藏导出（/export）立即写（saveJson 开关控制，沿旧行为）
 // - 其余标注/消息变更只做内存脏页标记，由 index.ts 的 5 分钟定时器批量刷盘
 // - 停机（SIGINT/SIGTERM）时冲刷一次，把丢失窗口归零
 import fs from 'node:fs'
 import path from 'node:path'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { getPageById } from '../db/repositories/pages'
 import { listAnnotationsByPage } from '../db/repositories/annotations'
 import { listMessagesByPage } from '../db/repositories/messages'
 
-export const CONTENT_DIR = path.join(KB_HOME, 'content')
+export const CONTENT_DIR = path.join(APP_ROOT, 'content')
 
 /** 脏页集合：已变更未刷盘的 pageId（进程内存态；进程被强杀丢最后 ≤5 分钟，见 spec） */
 const dirty = new Set<string>()
@@ -43,7 +44,7 @@ export function writeSidecar(pageId: string, trigger: string = 'snapshot'): bool
     messages: listMessagesByPage(pageId),
   }
   fs.mkdirSync(CONTENT_DIR, { recursive: true })
-  fs.writeFileSync(path.join(CONTENT_DIR, `${pageId}.json`), JSON.stringify(sidecar, null, 2), 'utf8')
+  fs.writeFileSync(path.join(CONTENT_DIR, `${pageId}.anno.json`), JSON.stringify(sidecar, null, 2), 'utf8')
   dirty.delete(pageId)
   return true
 }

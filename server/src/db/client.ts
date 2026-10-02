@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 
-export const DB_PATH = path.join(KB_HOME, 'kb.db')
+export const DB_PATH = path.join(APP_ROOT, 'kb.db')
 
 /**
  * 数据模型文档"最终表设计（精简版）"：4 张表 + 索引 + FTS5 触发器。

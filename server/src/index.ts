@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import express, { type NextFunction, type Request, type Response } from 'express'
-import { KB_HOME, HOST, PORT } from './env'
+import { KB_HOME, APP_ROOT, HOST, PORT } from './env'
 import { db } from './db/client'
 import { loadConfig, setTrustedExtensionId } from './services/config'
 import { flushDirtySidecars } from './services/sidecar'
@@ -15,7 +15,7 @@ import { pagesRouter } from './routes/pages'
 import { ApiError } from './errors'
 
 // 知识库目录初始化（建库在 db 模块加载时完成）
-fs.mkdirSync(path.join(KB_HOME, 'content', 'images'), { recursive: true })
+fs.mkdirSync(path.join(APP_ROOT, 'content', 'images'), { recursive: true })
 loadConfig()
 
 const app = express()
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
       ok: false,
       error: m ? 'unregistered_extension' : 'forbidden_origin',
       message: m
-        ? `扩展 ${m[1]} 未配对：编辑 ${path.join(KB_HOME, 'config.json')} 的 trustedExtensionId 后重启服务`
+        ? `扩展 ${m[1]} 未配对：编辑 ${path.join(APP_ROOT, 'config.json')} 的 trustedExtensionId 后重启服务`
         : '仅允许已配对的浏览器扩展访问',
     })
     return
@@ -128,5 +128,5 @@ for (const sig of ['SIGINT', 'SIGTERM'] as const) {
 
 app.listen(PORT, HOST, () => {
   console.log(`[server] notemarker kb backend listening at http://${HOST}:${PORT}`)
-  console.log(`[server] KB_HOME=${KB_HOME}`)
+  console.log(`[server] KB_HOME=${KB_HOME}（共享基础目录），项目数据根=${APP_ROOT}`)
 })

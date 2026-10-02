@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { ApiError } from '../errors'
 import { findImageByHash, insertImage } from '../db/repositories/images'
 import { sha256 } from './url'
@@ -24,7 +24,7 @@ const MIME_BY_EXT: Record<string, string> = {
   svg: 'image/svg+xml',
 }
 
-export const IMAGES_DIR = path.join(KB_HOME, 'content', 'images')
+export const IMAGES_DIR = path.join(APP_ROOT, 'content', 'images')
 
 export interface StoreImageInput {
   type: string
@@ -83,7 +83,7 @@ export async function storeImage(input: StoreImageInput): Promise<StoreImageResu
   if (existing) {
     const existingExt = extOf(existing.mime_type)
     const existingFile = path.join(IMAGES_DIR, `${hash}.${existingExt}`)
-    // 自愈：库里有记录但文件丢了（KB_HOME/content 运行中被删）——重写文件而非空手 dedupe，
+    // 自愈：库里有记录但文件丢了（content/images 运行中被删）——重写文件而非空手 dedupe，
     // 否则该 hash 永远 404（GET /images/:hash 只认文件）
     if (!fs.existsSync(existingFile)) {
       fs.mkdirSync(IMAGES_DIR, { recursive: true })

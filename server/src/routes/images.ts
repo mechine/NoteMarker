@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Router } from 'express'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { ApiError } from '../errors'
 import { findImageByHash } from '../db/repositories/images'
 import { storeImage } from '../services/images'
@@ -31,10 +31,10 @@ imagesRouter.get('/:hashAndExt', (req, res) => {
     throw new ApiError(404, 'not_found', `图片不存在：${hash}`)
   }
   const ext = extOfMime(row.mime_type)
-  const file = path.join(KB_HOME, 'content', 'images', `${hash}.${ext}`)
+  const file = path.join(APP_ROOT, 'content', 'images', `${hash}.${ext}`)
   fs.readFile(file, (err, data) => {
     if (err) {
-      // 回调内 throw 会变 uncaughtException 直接打挂进程（KB_HOME/content 被删即触发）——
+      // 回调内 throw 会变 uncaughtException 直接打挂进程（content/images 运行中被删即触发）——
       // 这里必须直接回响应，语义与 sync 路径的 404 统一错误格式一致
       res.status(404).json({ ok: false, error: 'not_found', message: `图片文件缺失：${hash}` })
       return

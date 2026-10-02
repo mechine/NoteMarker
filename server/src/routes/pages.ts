@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Router } from 'express'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { ApiError } from '../errors'
 import {
   countPages,
@@ -61,7 +61,7 @@ pagesRouter.get('/:id/content', (req, res) => {
   if (!page) {
     throw new ApiError(404, 'not_found', `页面不存在：${req.params.id}`)
   }
-  const file = path.join(KB_HOME, 'content', `${req.params.id}.md`)
+  const file = path.join(APP_ROOT, 'content', `${req.params.id}.md`)
   let markdown: string
   try {
     markdown = fs.readFileSync(file, 'utf8')
@@ -95,8 +95,9 @@ pagesRouter.delete('/:id', (req, res) => {
     throw new ApiError(404, 'not_found', `页面不存在：${req.params.id}`)
   }
   deletePage(req.params.id)
-  for (const ext of ['.md', '.json', '.html']) {
-    const file = path.join(KB_HOME, 'content', `${req.params.id}${ext}`)
+  // .json 兼容删除旧命名的侧车文件；删除失败仅记日志（ENOENT 静默）
+  for (const ext of ['.md', '.anno.json', '.json', '.html']) {
+    const file = path.join(APP_ROOT, 'content', `${req.params.id}${ext}`)
     try {
       fs.unlinkSync(file)
     } catch (err) {

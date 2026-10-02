@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { ApiError } from '../errors'
 
 export interface KbConfig {
@@ -12,7 +12,7 @@ export interface KbConfig {
   trustedExtensionId: string | null
 }
 
-const CONFIG_PATH = path.join(KB_HOME, 'config.json')
+const CONFIG_PATH = path.join(APP_ROOT, 'config.json')
 
 export const DEFAULT_CONFIG: KbConfig = {
   dedupeWindow: 5,
@@ -86,7 +86,7 @@ function writeConfig(next: KbConfig): void {
 
 export function getConfigView() {
   const c = loadConfig()
-  return { outputDir: KB_HOME, ...c }
+  return { outputDir: APP_ROOT, ...c }
 }
 
 function pickWhitelisted(raw: unknown): Partial<KbConfig> {

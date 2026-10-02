@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { ApiError } from '../errors'
 import {
   findOrCreatePage,
@@ -21,7 +21,7 @@ import { normalizeUrl, sha256, siteOf, urlHashOf } from './url'
 import { loadConfig } from './config'
 import { writeSidecar } from './sidecar'
 
-const CONTENT_DIR = path.join(KB_HOME, 'content')
+const CONTENT_DIR = path.join(APP_ROOT, 'content')
 
 export interface ExportAnnotationInput {
   id?: string
@@ -203,7 +203,7 @@ export async function exportPage(body: ExportRequest) {
 
   let jsonPath: string | null = null
   if (opts.saveJson !== false) {
-    jsonPath = `content/${page.id}.json`
+    jsonPath = `content/${page.id}.anno.json`
     // 侧车快照改走共用写入（specs kb-rebuild）：与 5 分钟定时刷同一结构（含 messages），坏库重建用
     // 注：标题用导出请求值（侧车共用函数取库内值，导出路径库内标题可能刚由本请求补全，两者一致）
     writeSidecar(page.id, body.trigger ?? 'manual')

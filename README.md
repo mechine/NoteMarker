@@ -31,7 +31,7 @@ Load the extension: open `chrome://extensions`, enable Developer mode, choose "L
 
 - `extension/` — Chrome extension (Manifest V3, Vite + @crxjs). Click-to-activate model: scripts are injected on demand via `activeTab`, with no broad host permissions
 - `server/` — local backend (Express + TypeScript + `node:sqlite`), binds to `127.0.0.1:8765` (`PORT` to override)
-- Data layout: `~/kb` by default (`KB_HOME` to override) — `kb.db` (SQLite, WAL), `config.json`, and `content/` (`{pageId}.md|.json|.html` plus `images/{hash}.*`)
+- Data layout: base dir `~/kb` (`KB_HOME` to override; shared across projects), with all NoteMarker data under `~/kb/notemarker/` — `kb.db` (SQLite, WAL), `config.json`, and `content/` (`{pageId}.md|.anno.json|.html` plus `images/{hash}.*`; `.anno.json` is the annotation sidecar protocol file)
 
 ## HTTP API (core set)
 

@@ -2,7 +2,8 @@
 // 用法：先停止后端（库文件被占用时脚本会拒绝执行），然后在 server/ 下执行 `npm run rebuild`。
 //
 // 可重建：
-// - pages + annotations + messages —— content/{pageId}.json 侧车快照：剪藏导出立即写，
+// - pages + annotations + messages —— content/{pageId}.anno.json 侧车快照（注解通用协议文件，
+//   兼容读取旧命名 {pageId}.json）：剪藏导出立即写，
 //   其余变更由后端 5 分钟脏页定时刷落盘（specs kb-rebuild），丢失窗口 ≤5 分钟（正常停机冲刷归零）
 // - images 映射 —— content/images/{hash}.{ext} 文件名即主键、扩展名定 MIME、体积可 stat
 // 不可重建（库坏即丢，需知晓）：
@@ -10,11 +11,11 @@
 // - pages.read_status（侧车未记录，重建后回到 unread）
 import fs from 'node:fs'
 import path from 'node:path'
-import { KB_HOME } from './env'
+import { APP_ROOT } from './env'
 import { normalizeUrl, urlHashOf } from './services/url'
 
-const DB_PATH = path.join(KB_HOME, 'kb.db')
-const CONTENT_DIR = path.join(KB_HOME, 'content')
+const DB_PATH = path.join(APP_ROOT, 'kb.db')
+const CONTENT_DIR = path.join(APP_ROOT, 'content')
 const IMAGES_DIR = path.join(CONTENT_DIR, 'images')
 
 const MIME_BY_EXT: Record<string, string> = {
@@ -87,7 +88,7 @@ async function main(): Promise<void> {
   const { findImageByHash, insertImage } = await import('./db/repositories/images')
   const { findMessage, insertMessage, updateMessageContent } = await import('./db/repositories/messages')
 
-  // 3) content/*.json → pages + annotations（带原 id，保持与 .md/.json 文件名一致）
+  // 3) content/*.anno.json（含旧命名 *.json）→ pages + annotations（带原 id，保持文件名与导出一致）
   let pageCount = 0
   let annCount = 0
   let msgCount = 0

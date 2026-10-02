@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Router } from 'express'
-import { KB_HOME } from '../env'
+import { APP_ROOT } from '../env'
 import { DB_PATH } from '../db/client'
 
 export const pingRouter = Router()
@@ -22,6 +22,6 @@ pingRouter.get('/', (_req, res) => {
     version: serverVersion(),
     uptime: Math.floor(process.uptime()),
     dbPath: DB_PATH,
-    outputDir: KB_HOME,
+    outputDir: APP_ROOT,
   })
 })
