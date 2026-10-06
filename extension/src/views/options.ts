@@ -93,7 +93,9 @@ function annTypeLabel(type: string): string {
     ? t('options_type_underline')
     : type === 'image'
       ? t('options_type_image')
-      : t('options_type_highlight')
+      : type === 'note'
+        ? t('options_type_note')
+        : t('options_type_highlight')
 }
 
 function fmtDate(iso: string): string {

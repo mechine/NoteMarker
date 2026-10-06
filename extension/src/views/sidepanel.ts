@@ -2,12 +2,16 @@
 // 面板是扩展页，直接 import 共享本地库（design D2）；页面操作全部经 tabs.sendMessage 驱动划线脚本。
 import {
   countPending,
+  create,
   listByPage,
+  nextSeq,
   normalizePageUrl,
   softDelete,
   update,
+  uuid,
   type LocalAnnotation,
 } from '../scripts/storage/annotations'
+import { getPageTitle, setPageTitle } from '../scripts/storage/pages'
 import {
   COLOR_SLOTS,
   getColorPalette,
@@ -45,6 +49,10 @@ const unsupportedEl = $<HTMLElement>('unsupported')
 const shotBtn = $<HTMLButtonElement>('shot-btn')
 const siteToggle = $<HTMLInputElement>('site-toggle')
 const marksToggle = $<HTMLInputElement>('marks-toggle')
+const pageTitleInput = $<HTMLInputElement>('page-title-input')
+const noteCard = $<HTMLElement>('note-card')
+const noteInput = $<HTMLTextAreaElement>('note-input')
+const noteAddBtn = $<HTMLButtonElement>('note-add')
 
 function showMsg(text: string, ok: boolean) {
   msgEl.textContent = text
@@ -79,11 +87,19 @@ function fmtDate(iso: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleString()
 }
 
+/** epoch ms → datetime-local 取值格式（本地时区 yyyy-MM-ddTHH:mm） */
+function toDatetimeLocalValue(ms: number): string {
+  const d = new Date(ms)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
+}
+
 // ---------- 活动标签页 ----------
 
 interface ActiveTab {
   id: number
   url: string
+  title: string
 }
 
 /**
@@ -96,7 +112,7 @@ async function activeTab(): Promise<ActiveTab | 'no-access' | null> {
   if (!tab?.id) return null
   if (typeof tab.url !== 'string') return 'no-access'
   if (!/^https?:/i.test(tab.url)) return null // chrome:// 等不支持注入的页面
-  return { id: tab.id, url: normalizePageUrl(tab.url) }
+  return { id: tab.id, url: normalizePageUrl(tab.url), title: typeof tab.title === 'string' ? tab.title : '' }
 }
 
 /** 激活轮询：当前标签未授权时等待用户点击图标（activeTab 落地后 URL 变可见），随即自动激活划线 */
@@ -126,9 +142,11 @@ function stopActivationPoll(): void {
 // ---------- 列表渲染（编辑中条目保留草稿，design D5） ----------
 
 /** 编辑态：id → { note 草稿, color, type }；refresh 重建后恢复 */
-const editing = new Map<string, { note: string; color: string; type: 'highlight' | 'underline' }>()
+const editing = new Map<string, { note: string; color: string; type: LocalAnnotation['type'] }>()
 
 let currentUrl = ''
+/** 当前标签页名（标题输入框默认值与回退值；refresh 时刷新） */
+let currentTabTitle = ''
 /** 后端基址缓存（refresh 时刷新；截图缩略图 URL 拼接用，specs/screenshot-annotation） */
 let backendBase = ''
 
@@ -137,6 +155,7 @@ async function refresh(): Promise<void> {
   const noAccess = res === 'no-access'
   const tab = noAccess ? null : res
   currentUrl = tab?.url ?? ''
+  currentTabTitle = tab?.title ?? ''
   const supported = tab !== null
   if (noAccess) {
     // 未激活：区别于真不支持（chrome:// 等）；提示点图标并轮询，授权落地后自动激活
@@ -149,6 +168,10 @@ async function refresh(): Promise<void> {
     if (!supported) unsupportedEl.textContent = t('sidepanel_unsupported')
   }
   shotBtn.disabled = !supported // 未激活/不支持注入的页面禁用截图入口
+  // 标题输入与手动标注卡片仅对可标注页面开放；默认值 = 用户设置 ?? 标签页名
+  pageTitleInput.disabled = !supported
+  noteCard.hidden = !supported
+  if (supported) pageTitleInput.value = (await getPageTitle(currentUrl)) ?? currentTabTitle
   backendBase = await backendUrl()
   itemsEl.textContent = ''
   // 列表渲染先行；辅助刷新独立容错，任一失败不影响主体列表
@@ -189,6 +212,9 @@ function renderItem(a: LocalAnnotation, tabId: number | undefined): HTMLLIElemen
   } else if (a.type === 'screenshot') {
     quote.textContent = `📷 ${a.quote}`
     quote.title = t('sidepanel_shot_title')
+  } else if (a.type === 'note') {
+    // 手动标注：无页内锚点，正文即用户输入文本
+    quote.textContent = `📝 ${a.quote}`
   } else {
     quote.textContent = a.quote
     quote.title = t('sidepanel_locate_hint')
@@ -235,8 +261,22 @@ function renderItem(a: LocalAnnotation, tabId: number | undefined): HTMLLIElemen
         ? t('options_type_image')
         : a.type === 'screenshot'
           ? t('sidepanel_type_screenshot')
-          : t('options_type_highlight')
-  meta.append(dot, typeLabel, chip)
+          : a.type === 'note'
+            ? t('options_type_note')
+            : t('options_type_highlight')
+
+  // 标注时间选择框：默认标注时间，改后落本地库并转 pending 走自动同步
+  const timeInput = document.createElement('input')
+  timeInput.type = 'datetime-local'
+  timeInput.value = toDatetimeLocalValue(a.createdAt ?? a.updatedAt)
+  timeInput.addEventListener('change', () => {
+    if (!currentUrl || !timeInput.value) return
+    const ts = new Date(timeInput.value).getTime()
+    if (Number.isNaN(ts)) return
+    void changeAnnotationTime(a.id, ts)
+  })
+
+  meta.append(dot, typeLabel, timeInput, chip)
 
   const ops = document.createElement('div')
   ops.className = 'ops'
@@ -253,8 +293,8 @@ function renderItem(a: LocalAnnotation, tabId: number | undefined): HTMLLIElemen
 
   li.append(quote, ...(a.type === 'screenshot' ? [thumb] : []), note, meta, ops, editbox)
 
-  // 点击条目正文 → 跳转定位（specs/extension-side-panel 跳转定位）；截图条目无页内锚点不定位
-  if (a.type !== 'screenshot') {
+  // 点击条目正文 → 跳转定位（specs/extension-side-panel 跳转定位）；截图/手动标注无页内锚点不定位
+  if (a.type !== 'screenshot' && a.type !== 'note') {
     quote.addEventListener('click', () => void focusAnnotation(a.id, tabId))
     note.addEventListener('click', () => void focusAnnotation(a.id, tabId))
   }
@@ -334,7 +374,7 @@ function openEditor(editbox: HTMLElement, a: LocalAnnotation, tabId: number | un
 
 async function saveDraft(
   a: LocalAnnotation,
-  draft: { note: string; color: string; type: 'highlight' | 'underline' },
+  draft: { note: string; color: string; type: LocalAnnotation['type'] },
   tabId: number | undefined,
   editbox: HTMLElement,
 ): Promise<void> {
@@ -350,6 +390,13 @@ async function saveDraft(
   }
   editing.delete(a.id)
   editbox.hidden = true
+  showMsg(t('sidepanel_saved_pending'), true)
+  await refresh()
+}
+
+async function changeAnnotationTime(id: string, ts: number): Promise<void> {
+  if (!currentUrl) return
+  await update(currentUrl, id, { createdAt: ts })
   showMsg(t('sidepanel_saved_pending'), true)
   await refresh()
 }
@@ -377,6 +424,54 @@ async function focusAnnotation(id: string, tabId: number | undefined): Promise<v
     showMsg(t('sidepanel_locate_unsupported'), false)
   }
 }
+
+// ---------- 本页标题编辑（用户可改，随同步推送后端 pages.title） ----------
+
+pageTitleInput.addEventListener('change', async () => {
+  if (!currentUrl) return
+  // 清空视为回退默认（标签页名）
+  const title = pageTitleInput.value.trim() || currentTabTitle
+  if (!title) return
+  pageTitleInput.value = title
+  if (title === ((await getPageTitle(currentUrl)) ?? currentTabTitle)) return
+  await setPageTitle(currentUrl, title)
+  showMsg(t('sidepanel_saved_pending'), true)
+  // 触发一次同步编排：优先推送脏标题（离线时保留待下次）
+  try {
+    await chrome.runtime.sendMessage({ action: 'sync' })
+  } catch {
+    /* SW 未响应忽略：脏标题留在本地，下次同步再推 */
+  }
+})
+
+// ---------- 手动标注卡片（输入文本即成本页标注，与页面标注同一同步链路） ----------
+
+noteAddBtn.addEventListener('click', async () => {
+  const text = noteInput.value.trim()
+  if (!text || !currentUrl) return
+  noteAddBtn.disabled = true
+  try {
+    await create({
+      id: uuid(),
+      url: currentUrl,
+      title: pageTitleInput.value.trim() || currentTabTitle,
+      quote: text,
+      prefix: '',
+      suffix: '',
+      startOffset: null,
+      endOffset: null,
+      note: '',
+      type: 'note',
+      color: 'yellow',
+      seq: await nextSeq(currentUrl),
+    })
+    noteInput.value = ''
+    showMsg(t('sidepanel_saved_pending'), true)
+    await refresh()
+  } finally {
+    noteAddBtn.disabled = false
+  }
+})
 
 // ---------- 截图标记入口（specs/screenshot-annotation：标记页顶部按钮） ----------
 

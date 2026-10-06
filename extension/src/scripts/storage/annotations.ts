@@ -3,7 +3,7 @@
 // content script（划线读写）与 background（同步改状态）共用；写放大可接受（万级记录 <5MB）。
 
 export type SyncState = 'pending' | 'synced'
-export type LocalAnnotationType = 'highlight' | 'underline' | 'image' | 'screenshot'
+export type LocalAnnotationType = 'highlight' | 'underline' | 'image' | 'screenshot' | 'note'
 
 export interface LocalAnnotation {
   /** 客户端 UUID：同步时直通服务端（design D1），deduped 场景采用服务端返回 id */
@@ -20,6 +20,8 @@ export interface LocalAnnotation {
   note: string
   type: LocalAnnotationType
   color: string
+  /** 标注时间（epoch ms）：创建时默认写入，可修改（侧栏时间选择框）；同步时直传服务端 created_at；旧记录缺省回落 updatedAt */
+  createdAt?: number
   syncState: SyncState
   updatedAt: number
   /** 页内自增编号（specs/extension-highlighter 标注编号）：纯本地元数据，不同步；删除不重排、编号不复用 */
@@ -94,7 +96,7 @@ export async function listByPage(url: string): Promise<LocalAnnotation[]> {
 }
 
 export async function create(input: NewLocalAnnotation): Promise<LocalAnnotation> {
-  const record: LocalAnnotation = { ...input, syncState: 'pending', updatedAt: Date.now() }
+  const record: LocalAnnotation = { ...input, createdAt: input.createdAt ?? Date.now(), syncState: 'pending', updatedAt: Date.now() }
   await mutateBucket(input.url, (bucket) => {
     bucket.push(record)
     return true
@@ -106,7 +108,7 @@ export async function update(
   url: string,
   id: string,
   patch: Partial<
-    Pick<LocalAnnotation, 'note' | 'color' | 'type' | 'quote' | 'prefix' | 'suffix' | 'imgLocal'>
+    Pick<LocalAnnotation, 'note' | 'color' | 'type' | 'quote' | 'prefix' | 'suffix' | 'imgLocal' | 'createdAt'>
   >,
 ): Promise<LocalAnnotation | undefined> {
   let updated: LocalAnnotation | undefined
@@ -267,6 +269,7 @@ export interface ServerAnnotationItem {
   note: string
   type: string
   color: string
+  createdAt?: string
 }
 
 /**
@@ -291,6 +294,7 @@ export async function replaceBucketFromServer(url: string, items: ServerAnnotati
         note: s.note ?? '',
         type: s.type as LocalAnnotationType,
         color: s.color,
+        createdAt: s.createdAt && Number.isFinite(Date.parse(s.createdAt)) ? Date.parse(s.createdAt) : undefined,
         syncState: 'synced' as const,
         updatedAt: Date.now(),
         seq: i + 1,

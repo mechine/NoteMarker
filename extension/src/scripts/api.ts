@@ -203,6 +203,8 @@ export interface SyncItemInput {
   note?: string
   type?: string
   color?: string
+  /** 标注时间（ISO 8601）：服务端写入 created_at；缺省时服务端按当前时间写入（兼容旧客户端） */
+  createdAt?: string
 }
 
 export interface SyncItemResult {
@@ -282,6 +284,17 @@ export async function updatePageReadStatus(
 
 export async function deletePage(id: string): Promise<RestResult<{ ok: boolean }>> {
   return request<{ ok: boolean }>(`/pages/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+/** 用户改页面标题：页面在后端不存在时不代创建（applied:false），由首次标注同步携带 pageTitle 建页 */
+export async function updatePageTitle(
+  pageUrl: string,
+  title: string,
+): Promise<RestResult<{ ok: boolean; applied?: boolean }>> {
+  return request<{ ok: boolean; applied?: boolean }>('/pages/title', {
+    method: 'PUT',
+    body: JSON.stringify({ pageUrl, title }),
+  })
 }
 
 /** 阅读预览：读取页面导出的 Markdown 正文（specs/page-readlist 读取页面内容） */

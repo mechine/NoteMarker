@@ -28,6 +28,8 @@ export interface AnnotationInput {
   note?: string
   type?: string
   color?: string
+  /** 标注时间（SQLite DATETIME 格式，UTC）：客户端指定时写入 created_at；缺省走列默认 CURRENT_TIMESTAMP */
+  createdAt?: string | null
 }
 
 /** 位置去重：可空字段用 IS 匹配（比唯一索引更严——索引视 NULL 为互异，此处视为同位置） */
@@ -45,13 +47,13 @@ export function findAtPosition(
     .get(pageId, messageId, startOffset, endOffset) as AnnotationRow | undefined
 }
 
-export function insertAnnotation(input: AnnotationInput): string {
-  const id = randomUUID()
-  db.prepare(
-    `INSERT INTO annotations (id, page_id, message_id, quote, prefix, suffix, start_offset, end_offset, note, type, color)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  ).run(
-    id,
+/** 标注写入列/值（除 id 外）；createdAt 存在时追加 created_at 列（缺省由列默认 CURRENT_TIMESTAMP 填充） */
+function annotationColsAndVals(input: AnnotationInput): {
+  cols: string[]
+  vals: (string | number | null)[]
+} {
+  const cols = ['page_id', 'message_id', 'quote', 'prefix', 'suffix', 'start_offset', 'end_offset', 'note', 'type', 'color']
+  const vals: (string | number | null)[] = [
     input.pageId,
     input.messageId ?? null,
     input.quote,
@@ -62,7 +64,20 @@ export function insertAnnotation(input: AnnotationInput): string {
     input.note ?? '',
     input.type ?? 'highlight',
     input.color ?? 'yellow',
-  )
+  ]
+  if (input.createdAt) {
+    cols.push('created_at')
+    vals.push(input.createdAt)
+  }
+  return { cols, vals }
+}
+
+export function insertAnnotation(input: AnnotationInput): string {
+  const id = randomUUID()
+  const { cols, vals } = annotationColsAndVals(input)
+  db.prepare(
+    `INSERT INTO annotations (id, ${cols.join(', ')}) VALUES (${['id', ...cols].map(() => '?').join(', ')})`,
+  ).run(id, ...vals)
   return id
 }
 
@@ -76,7 +91,7 @@ export function upsertAnnotationWithId(input: AnnotationInput & { id: string }):
   if (existing) {
     db.prepare(
       `UPDATE annotations SET quote = ?, prefix = ?, suffix = ?, start_offset = ?, end_offset = ?,
-       note = ?, type = ?, color = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+       note = ?, type = ?, color = ?, updated_at = CURRENT_TIMESTAMP${input.createdAt ? ', created_at = ?' : ''} WHERE id = ?`,
     ).run(
       input.quote,
       input.prefix ?? null,
@@ -86,25 +101,14 @@ export function upsertAnnotationWithId(input: AnnotationInput & { id: string }):
       input.note ?? '',
       input.type ?? 'highlight',
       input.color ?? 'yellow',
+      ...(input.createdAt ? [input.createdAt] : []),
       input.id,
     )
   } else {
+    const { cols, vals } = annotationColsAndVals(input)
     db.prepare(
-      `INSERT INTO annotations (id, page_id, message_id, quote, prefix, suffix, start_offset, end_offset, note, type, color)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).run(
-      input.id,
-      input.pageId,
-      input.messageId ?? null,
-      input.quote,
-      input.prefix ?? null,
-      input.suffix ?? null,
-      input.startOffset ?? null,
-      input.endOffset ?? null,
-      input.note ?? '',
-      input.type ?? 'highlight',
-      input.color ?? 'yellow',
-    )
+      `INSERT INTO annotations (id, ${cols.join(', ')}) VALUES (${['id', ...cols].map(() => '?').join(', ')})`,
+    ).run(input.id, ...vals)
   }
 }
 

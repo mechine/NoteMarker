@@ -488,7 +488,7 @@ async function restore(): Promise<void> {
     let allRendered = true
     for (const a of list) {
       if (!records.has(a.id)) continue // 等待期间被用户删除
-      if (a.type === 'screenshot') continue // 截图无页内锚点：常态跳过（不算失配，避免空转重试）
+      if (a.type === 'screenshot' || a.type === 'note') continue // 截图/手动标注无页内锚点：常态跳过（不算失配，避免空转重试）
       if (document.querySelector(`${HL_TAG}[data-id="${CSS.escape(a.id)}"], img[data-notemarker-id="${CSS.escape(a.id)}"]`)) continue
       allRendered = false
       if (a.type === 'image') tryRestoreImage(a)

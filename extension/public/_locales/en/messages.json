@@ -27,6 +27,7 @@
   "options_type_highlight": { "message": "Highlight" },
   "options_type_underline": { "message": "Underline" },
   "options_type_image": { "message": "Image" },
+  "options_type_note": { "message": "Note" },
   "options_filter_all_notes": { "message": "All" },
   "options_filter_with_note": { "message": "With note" },
   "options_filter_without_note": { "message": "Without note" },
@@ -224,6 +225,9 @@
   "sidepanel_save": { "message": "Save" },
   "sidepanel_cancel": { "message": "Cancel" },
   "sidepanel_saved_pending": { "message": "Saved (pending sync)" },
+  "sidepanel_page_title_ph": { "message": "Page title (defaults to tab name)" },
+  "sidepanel_note_card_ph": { "message": "Type an annotation…" },
+  "sidepanel_note_add": { "message": "Add annotation" },
   "sidepanel_locate_failed": {
     "message": "Can't locate this annotation (page content may have changed)"
   },

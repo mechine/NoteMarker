@@ -6,10 +6,14 @@ import { ApiError } from '../errors'
 import {
   countPages,
   deletePage,
+  findPageByUrlHash,
   getPageById,
   listPages,
   updateReadStatus,
+  updatePageTitle,
 } from '../db/repositories/pages'
+import { normalizeUrl, sha256 } from '../services/url'
+import { markSidecarDirty } from '../services/sidecar'
 
 export const pagesRouter = Router()
 
@@ -19,6 +23,32 @@ const READ_STATUSES = ['unread', 'read', 'archived'] as const
 function toIso(s: string): string {
   return `${s.replace(' ', 'T')}Z`
 }
+
+// 用户改页面标题（侧栏标题编辑）。页面可能尚未在后端（从未标注/剪藏）——
+// 不代创建空页：创建交给首次标注同步携带的 pageTitle（annotations 路由 findOrCreatePage）
+pagesRouter.put('/title', (req, res) => {
+  const { pageUrl, title } = req.body ?? {}
+  if (typeof pageUrl !== 'string' || !pageUrl.trim()) {
+    throw new ApiError(400, 'invalid_request', 'pageUrl 不能为空')
+  }
+  if (typeof title !== 'string' || !title.trim()) {
+    throw new ApiError(400, 'invalid_request', 'title 不能为空')
+  }
+  let url: string
+  try {
+    url = normalizeUrl(pageUrl)
+  } catch {
+    throw new ApiError(400, 'invalid_request', `pageUrl 无法解析：${pageUrl}`)
+  }
+  const page = findPageByUrlHash(sha256(url))
+  if (!page) {
+    res.status(200).json({ ok: true, applied: false })
+    return
+  }
+  updatePageTitle(page.id, title.trim())
+  markSidecarDirty(page.id)
+  res.status(200).json({ ok: true, applied: true, id: page.id })
+})
 
 // 阅读列表：分页 + 状态过滤（specs/page-readlist）
 pagesRouter.get('/', (req, res) => {

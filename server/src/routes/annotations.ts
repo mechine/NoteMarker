@@ -41,6 +41,15 @@ function toApi(row: AnnotationRow) {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+/** 客户端标注时间（ISO 8601）→ SQLite DATETIME 文本（UTC 秒级，与 CURRENT_TIMESTAMP 同构） */
+function toSqliteDatetime(iso: string): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) {
+    throw new ApiError(400, 'invalid_request', `createdAt 无法解析：${iso}`)
+  }
+  return d.toISOString().slice(0, 19).replace('T', ' ')
+}
+
 function parsePageAndBody(body: Record<string, unknown>) {
   const pageUrl = body.pageUrl
   const quote = body.quote
@@ -77,6 +86,8 @@ function parsePageAndBody(body: Record<string, unknown>) {
       type: typeof body.type === 'string' ? body.type : 'highlight',
       color: typeof body.color === 'string' ? body.color : 'yellow',
       pageTitle: typeof body.pageTitle === 'string' ? body.pageTitle : null,
+      createdAt:
+        typeof body.createdAt === 'string' && body.createdAt ? toSqliteDatetime(body.createdAt) : null,
     },
   }
 }
@@ -113,6 +124,7 @@ function createAnnotation(body: Record<string, unknown>): Record<string, unknown
         note: parsed.optional.note,
         type: parsed.optional.type,
         color: parsed.optional.color,
+        createdAt: parsed.optional.createdAt,
       })
       markSidecarDirty(page.id)
       const row = getAnnotationById(parsed.id)!
@@ -139,6 +151,7 @@ function createAnnotation(body: Record<string, unknown>): Record<string, unknown
       note: parsed.optional.note,
       type: parsed.optional.type,
       color: parsed.optional.color,
+      createdAt: parsed.optional.createdAt,
     })
     syncAnnotationCount(page.id)
   markSidecarDirty(page.id)
@@ -171,6 +184,7 @@ function createAnnotation(body: Record<string, unknown>): Record<string, unknown
     note: parsed.optional.note,
     type: parsed.optional.type,
     color: parsed.optional.color,
+    createdAt: parsed.optional.createdAt,
   })
   syncAnnotationCount(page.id)
   markSidecarDirty(page.id)

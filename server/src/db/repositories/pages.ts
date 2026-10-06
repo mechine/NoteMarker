@@ -90,3 +90,9 @@ export function updateReadStatus(pageId: string, status: string): boolean {
   const r = db.prepare('UPDATE pages SET read_status = ? WHERE id = ?').run(status, pageId)
   return r.changes > 0
 }
+
+/** 用户改页面标题：同样不动 updated_at（语义同 updateReadStatus） */
+export function updatePageTitle(pageId: string, title: string): boolean {
+  const r = db.prepare('UPDATE pages SET title = ? WHERE id = ?').run(title, pageId)
+  return r.changes > 0
+}

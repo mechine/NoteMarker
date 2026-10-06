@@ -192,6 +192,48 @@
         border-color: #32d74b;
         color: #32d74b;
       }
+      /* 标注时间选择框（meta 行内，类型标签与同步状态之间） */
+      .meta input[type='datetime-local'] {
+        padding: 0 2px;
+        height: 18px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        font: 400 11px sans-serif;
+        max-width: 100%;
+      }
+      /* 本页标题行（"本页标注"标题栏之后）：默认标签页名，可改并同步后端 */
+      #page-title-row {
+        display: flex;
+        margin-bottom: 8px;
+      }
+      #page-title-row input {
+        flex: 1;
+        min-width: 0;
+        padding: 5px 8px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        font: 400 12px sans-serif;
+      }
+      /* 手动标注卡片（标注列表上方）：输入文本即成本页标注，直接走同步 */
+      #note-card {
+        border-style: dashed;
+      }
+      #note-card textarea {
+        width: 100%;
+        min-height: 44px;
+        resize: vertical;
+        padding: 6px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        font: 400 13px/1.4 sans-serif;
+        background: transparent;
+        color: inherit;
+        box-sizing: border-box;
+      }
       .ops {
         display: flex;
         gap: 6px;
@@ -480,6 +522,15 @@
         <span class="count" id="pending-count" hidden></span>
         <button id="sync-btn" data-i18n="sidepanel_sync"></button>
         <button id="shot-btn" class="primary" data-i18n="sidepanel_shot"></button>
+      </div>
+      <div id="page-title-row">
+        <input type="text" id="page-title-input" data-i18n-attr="placeholder:sidepanel_page_title_ph" />
+      </div>
+      <div class="item" id="note-card" hidden>
+        <textarea id="note-input" data-i18n-attr="placeholder:sidepanel_note_card_ph"></textarea>
+        <div class="ops">
+          <button id="note-add" class="primary" data-i18n="sidepanel_note_add"></button>
+        </div>
       </div>
       <div id="unsupported" hidden>
         <span data-i18n="sidepanel_unsupported"></span>

@@ -8,6 +8,7 @@ import {
   listAnnotations,
   ping,
   syncAnnotationsBatch,
+  updatePageTitle,
   uploadImage,
   type SyncItemInput,
 } from './scripts/api'
@@ -22,6 +23,7 @@ import {
   type LocalAnnotation,
 } from './scripts/storage/annotations'
 import { getCacheLimit, getMaster, getShowMarks, isSiteDisabled, originOf, setMaster, setSiteDisabled, setShowMarks } from './scripts/storage/settings'
+import { clearDirtyPageTitle, getAllPageTitles, listDirtyPageTitles } from './scripts/storage/pages'
 import { isPageSavePayload } from './scripts/types'
 
 // ---------- 图标行为：优先打开侧栏；老版本 Chrome（<114 无 sidePanel）回退为点击剪藏 ----------
@@ -129,11 +131,12 @@ export interface SyncSummary {
 
 const BATCH_CHUNK = 500
 
-function toSyncItem(a: LocalAnnotation): SyncItemInput {
+function toSyncItem(a: LocalAnnotation, titleOverride?: string): SyncItemInput {
   return {
     id: a.id,
     pageUrl: a.url,
-    pageTitle: a.title,
+    // 用户在侧栏改过的标题优先（随标注创建补全 server pages.title）
+    pageTitle: titleOverride ?? a.title,
     quote: a.quote,
     prefix: a.prefix,
     suffix: a.suffix,
@@ -142,6 +145,8 @@ function toSyncItem(a: LocalAnnotation): SyncItemInput {
     note: a.note,
     type: a.type,
     color: a.color,
+    // 旧记录（升级前创建）无 createdAt：不传，服务端保持自有值/默认写入
+    createdAt: typeof a.createdAt === 'number' ? new Date(a.createdAt).toISOString() : undefined,
   }
 }
 
@@ -149,10 +154,23 @@ async function doSync(): Promise<SyncSummary> {
   const summary: SyncSummary = { offline: false, pushed: 0, failed: 0, deleted: 0, deleteFailed: 0 }
   await chrome.action.setBadgeText({ text: '…' })
   try {
-    const pending = await listPending()
+    // 先推送用户改过的页面标题（侧栏标题编辑，PUT /pages/title）：
+    // 失败保留 dirty 下次再试；后端无该页时不代创建（首次标注同步会携带 pageTitle 建页）
+    for (const d of await listDirtyPageTitles()) {
+      const r = await updatePageTitle(d.url, d.title)
+      if (r.offline) {
+        summary.offline = true
+        break
+      }
+      if (r.json?.ok) await clearDirtyPageTitle(d.url)
+    }
+
+    const pending = summary.offline ? [] : await listPending()
+    // 用户标题覆盖：同页标注统一用侧栏设置的标题建页/补全
+    const titleOverrides = await getAllPageTitles()
     for (let i = 0; i < pending.length; i += BATCH_CHUNK) {
       const chunk = pending.slice(i, i + BATCH_CHUNK)
-      const r = await syncAnnotationsBatch(chunk.map(toSyncItem))
+      const r = await syncAnnotationsBatch(chunk.map((a) => toSyncItem(a, titleOverrides[a.url])))
       if (r.offline || !r.json?.ok) {
         summary.offline = r.offline
         summary.failed += chunk.length
@@ -222,7 +240,12 @@ function scheduleAutoSync(): void {
   autoSyncTimer = setTimeout(() => {
     autoSyncTimer = undefined
     void (async () => {
-      if (!(await countPending()) && !(await listSyncedTombstones()).length) return
+      if (
+        !(await countPending()) &&
+        !(await listSyncedTombstones()).length &&
+        !(await listDirtyPageTitles()).length
+      )
+        return
       const s = await runSync()
       if (!s.offline && (s.failed || s.deleteFailed)) {
         console.log('[notemarker] auto sync partial failure:', JSON.stringify(s))
