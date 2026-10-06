@@ -1,6 +1,6 @@
 {
   "name": "notemarker-extension",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "notemarker Chrome 扩展前端（Manifest V3，网页划线标注与本地知识库剪藏）",
   "scripts": {
